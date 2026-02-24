@@ -1,7 +1,7 @@
 # Import-CaCertificates
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/paulmann/Import-CaCertificates)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![PowerShell](https://img.shields.io/badge/powershell-5.1%2B-blue.svg)](https://docs.microsoft.com/en-us/powershell/)
+[![PowerShell](https://img.shields.io/badge/powershell-7.5%2B-blue.svg)](https://docs.microsoft.com/en-us/powershell/)
 [![Platform](https://img.shields.io/badge/platform-Windows-blue.svg)](https://www.microsoft.com/windows/)
 
 - [1. Overview](#1-overview)
@@ -45,7 +45,7 @@ The script ensures that your Windows environment trusts the necessary Certificat
 ## 3. System Requirements
 
 - **Operating System**: Windows 7, Windows Server 2012 R2 or later.
-- **PowerShell**: Version 5.1 or higher (PowerShell Core 7.x supported).
+- **PowerShell**: Version 7.5 or higher (PowerShell Core 7.x supported).
 - **Permissions**: Local Administrator privileges (required to modify system certificate stores).
 - **Network**: Internet access to download certificates from source URLs.
 
