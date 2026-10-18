@@ -145,7 +145,7 @@ For environments requiring the older DST Root CA X3 cross-sign (for legacy compa
 ## 11. License & Acknowledgments
 
 ### License
-This project is licensed under the **MIT License**.
+This project is licensed under the **PolyForm Noncommercial License 1.0.0**.
 
 ### Copyright
 Copyright © 2025 Mikhail Deynekin.
