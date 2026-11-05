@@ -70,6 +70,10 @@ try {
         Copy-Item -LiteralPath (Join-Path -Path $repositoryRoot -ChildPath $file) -Destination $stagingDirectory
     }
 
+    foreach ($readme in @(Get-ChildItem -Path $repositoryRoot -Filter 'README*.md' -File)) {
+        Copy-Item -LiteralPath $readme.FullName -Destination $stagingDirectory
+    }
+
     foreach ($directory in @('src', 'docs')) {
         $source = Join-Path -Path $repositoryRoot -ChildPath $directory
         if (Test-Path -LiteralPath $source -PathType Container) {
