@@ -114,9 +114,9 @@ your PKI documentation, not from the same URL you are downloading from.
 | Network | HTTPS access to each `-Uri` host; not needed with `-Path` |
 | Windows 7 / 8.1 | Not supported: PowerShell 7 does not install there. Version 1.x claimed support it did not have. |
 
-Tested by CI on `windows-latest` with PowerShell 7.4/7.5 and Pester 5.7.1; developed
-and tested locally on Windows 11 with PowerShell 7.6. Other combinations are expected to
-work but are not covered by CI.
+Tested by CI on `windows-latest` with PowerShell 7.x and Pester 5.7.1, and locally on
+Windows 10/11 with PowerShell 7.6. Other combinations are expected to work but are not
+covered by CI.
 
 ## 6. Install
 

@@ -13,6 +13,11 @@
 
 $ErrorActionPreference = 'Stop'
 
+# Gating flags are computed at discovery time because Pester evaluates It -Skip
+# before BeforeAll runs. They are intentionally not touched in BeforeAll.
+$script:IntegrationCi = -not [string]::IsNullOrWhiteSpace($env:CI)
+$script:IntegrationAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+
 BeforeAll {
     $script:RepositoryRoot = Split-Path -Path $PSScriptRoot -Parent
     $script:ModulePath = Join-Path -Path $script:RepositoryRoot -ChildPath 'src/Import-CaCertificates/Import-CaCertificates.psd1'
@@ -27,8 +32,6 @@ BeforeAll {
     $script:rootObject = New-TestCaCertificate -CommonName 'CN=RAGRAF Integration Root CA' -OutFile (Join-Path $script:testRoot 'root.pem')
     $script:rootPem = Join-Path $script:testRoot 'root.pem'
     $script:rootSha256 = Get-TestSha256 -Certificate $script:rootObject
-    $script:isAdministrator = Test-IsAdministrator
-    $script:isCi = -not [string]::IsNullOrWhiteSpace($env:CI)
 }
 
 AfterAll {
@@ -39,7 +42,7 @@ AfterAll {
 }
 
 Describe 'HTTPS download' {
-    It 'imports a public root CA over HTTPS in a dry run' -Skip:(-not $script:isCi) {
+    It 'imports a public root CA over HTTPS in a dry run' -Skip:(-not $script:IntegrationCi) {
         $uri = 'https://letsencrypt.org/certs/isrgrootx1.pem'
         $downloaded = Join-Path $script:testRoot 'isrgrootx1.pem'
         Invoke-WebRequest -Uri $uri -OutFile $downloaded -UseBasicParsing -TimeoutSec 60
@@ -67,7 +70,7 @@ Describe 'HTTPS download' {
 }
 
 Describe 'LocalMachine store' {
-    It 'imports and removes a root CA in LocalMachine\Root' -Skip:(-not ($script:isCi -and $script:isAdministrator)) {
+    It 'imports and removes a root CA in LocalMachine\Root' -Skip:(-not ($script:IntegrationCi -and $script:IntegrationAdmin)) {
         $thumbprint = $script:rootObject.Thumbprint
         try {
             $result = Import-CaCertificate -Path $script:rootPem -Thumbprint $script:rootSha256 -StoreLocation LocalMachine -Confirm:$false -PassThru
@@ -81,7 +84,7 @@ Describe 'LocalMachine store' {
         @(Get-TestStoreMatch -Thumbprint $thumbprint -StoreName 'Root' -StoreLocation 'LocalMachine').Count | Should -Be 0
     }
 
-    It 'refuses LocalMachine writes without administrator rights' -Skip:($script:isAdministrator) {
+    It 'refuses LocalMachine writes without administrator rights' -Skip:($script:IntegrationAdmin) {
         $threw = $false
         $exitCode = 0
         try {
