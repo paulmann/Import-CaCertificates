@@ -6,6 +6,38 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- GitHub Wiki manual, authored in `wiki/` and published with `ghagent wiki publish`:
+  Home, Why, Install, Quick Start, Usage, Parameters, Security Model, Troubleshooting,
+  Migration from 1.x, Development, FAQ and For Agents.
+- Community and metadata files: `CODE_OF_CONDUCT.md`, `SUPPORT.md`, `.editorconfig`,
+  `CITATION.cff`, `.github/PULL_REQUEST_TEMPLATE.md`, three issue forms,
+  `.github/CODEOWNERS` and `.github/dependabot.yml`.
+- `assets/social-preview.png` (1280x640) and `assets/social-preview.svg`, used as the
+  repository social preview and as the README banner.
+- `docs/AGENT-GUIDE.md`: detailed agent operations (parameter table, failure modes,
+  step-by-step runs) moved out of `AGENTS.md` so that `AGENTS.md` stays a map.
+
+### Changed
+
+- All six READMEs now open with a summary paragraph, carry a `Contents` heading, a
+  navigation row and a documentation table linking the wiki, the docs site, the release
+  page and the repository documentation files.
+- `AGENTS.md` reduced to a map under 120 lines and linking to `docs/AGENT-GUIDE.md` for
+  the details.
+- Contact details in the READMEs and in `SECURITY.md` point to the GitHub profile and to
+  GitHub private vulnerability reporting instead of a personal e-mail address.
+- `CHANGELOG.md`: the `[Unreleased]` comparison link was added and the `2.0.0` sections
+  were put in the Keep a Changelog canonical order.
+
+### Fixed
+
+- The unit-test fixture for the private-key refusal assembles its PEM marker at run time,
+  so secret scanners no longer report `tests/Import-CaCertificates.Unit.Tests.ps1:130` as
+  a private-key disclosure. Test behaviour is unchanged: 38 tests, 36 passed and 2
+  skipped locally.
+
 ## [2.0.1] - 2026-11-06
 
 ### Changed
@@ -59,6 +91,13 @@ All notable changes to this project are documented here. The format follows
 - The wrapper accepts `-KeepFiles` as an alias of `-KeepTempFiles` for compatibility with
   the 1.x documentation.
 
+### Removed
+
+- The single-script-only implementation and the `main`-branch raw download as the
+  recommended installation path; releases with checksums are now the supported channel.
+- The misleading "securely downloading" claim without a verifiable fingerprint model.
+- The 1.x README examples that used `http://` URLs.
+
 ### Security
 
 - Plain HTTP URLs are rejected before any request is made.
@@ -67,13 +106,6 @@ All notable changes to this project are documented here. The format follows
   (`ConfirmImpact = High`) and read-back verification of the store write.
 - `-Force` no longer implies "import without checks": it only replaces a certificate with
   the same SHA-256 fingerprint.
-
-### Removed
-
-- The single-script-only implementation and the `main`-branch raw download as the
-  recommended installation path; releases with checksums are now the supported channel.
-- The misleading "securely downloading" claim without a verifiable fingerprint model.
-- The 1.x README examples that used `http://` URLs.
 
 ## [1.0.0] - 2026-03-18
 
@@ -85,6 +117,7 @@ All notable changes to this project are documented here. The format follows
 - `-Force`, `-KeepTempFiles`, `-WhatIf`/`-Confirm`, PEM/DER parsing, duplicate check by
   SHA-1 thumbprint, cleanup of the temporary directory.
 
+[Unreleased]: https://github.com/paulmann/Import-CaCertificates/compare/v2.0.1...HEAD
 [2.0.1]: https://github.com/paulmann/Import-CaCertificates/releases/tag/v2.0.1
 [2.0.0]: https://github.com/paulmann/Import-CaCertificates/releases/tag/v2.0.0
 [1.0.0]: https://github.com/paulmann/Import-CaCertificates/commits/main
