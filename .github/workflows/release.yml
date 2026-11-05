@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and publish release assets
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build archive and checksums
+        shell: pwsh
+        run: ./tools/New-Release.ps1 -Version ${{ github.ref_name }} -OutputDirectory ./out
+
+      - name: Verify checksums
+        shell: pwsh
+        run: |
+          Push-Location ./out
+          try {
+            $lines = Get-Content -Path ./SHA256SUMS.txt
+            foreach ($line in $lines) {
+              if ($line -match '^(?<hash>[0-9A-Fa-f]{64})\s+(?<file>\S+)$') {
+                $actual = (Get-FileHash -Algorithm SHA256 -LiteralPath $Matches['file']).Hash
+                if ($actual -ne $Matches['hash'].ToUpperInvariant()) { throw "Checksum mismatch for $($Matches['file'])" }
+              }
+            }
+            Write-Host 'Checksums verified.'
+          }
+          finally {
+            Pop-Location
+          }
+
+      - name: Create or update the GitHub release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $tag = '${{ github.ref_name }}'
+          gh release view $tag 2>$null | Out-Null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag --title "Import-CaCertificates $tag" --notes "See CHANGELOG.md for the full list of changes."
+          }
+          $assets = @(Get-ChildItem -Path ./out -File | Select-Object -ExpandProperty FullName)
+          gh release upload $tag @assets --clobber
+          Write-Host "Release $tag published with $($assets.Count) asset(s)."

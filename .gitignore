@@ -1,0 +1,20 @@
+# Release build output
+out/
+*.zip
+
+# Test and analysis artifacts
+TestResults/
+*.trx
+*.nunit.xml
+coverage.xml
+
+# Editor and OS noise
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+Desktop.ini
+
+# Local logs and scratch files
+*.log
+*.tmp
