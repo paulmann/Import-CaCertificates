@@ -1,0 +1,28 @@
+{
+  "repo": "paulmann/Import-CaCertificates",
+  "branch": "main",
+  "title": "Import-CaCertificates 2.0.1",
+  "footer": "MIT License",
+  "groups": [
+    {
+      "title": "Start",
+      "pages": ["Home.md", "01-Why.md", "02-Install.md", "03-Quick-Start.md"]
+    },
+    {
+      "title": "Using the tool",
+      "pages": ["04-Usage.md", "05-Parameters.md"]
+    },
+    {
+      "title": "Trust and operations",
+      "pages": ["06-Security-Model.md", "07-Troubleshooting.md"]
+    },
+    {
+      "title": "Upgrade and development",
+      "pages": ["08-Migration-from-1.x.md", "09-Development.md"]
+    },
+    {
+      "title": "Reference",
+      "pages": ["10-FAQ.md", "11-For-Agents.md"]
+    }
+  ]
+}
