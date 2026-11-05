@@ -1,12 +1,24 @@
 # Import-CaCertificates
 
+**Import-CaCertificates** импортирует публичные сертификаты корневого и промежуточного
+CA в хранилища сертификатов Windows, проверив, что каждый сертификат совпадает с
+закреплённым отпечатком SHA-256. Это модуль для PowerShell 7.4+ на серверах Windows,
+которым нужно доверять конкретной цепочке CA, а не скачанному файлу.
+
 [![Version](https://img.shields.io/badge/version-2.0.1-blue.svg)](https://github.com/paulmann/Import-CaCertificates/releases/latest)
 [![PowerShell](https://img.shields.io/badge/powershell-7.4%2B-blue.svg)](https://learn.microsoft.com/powershell/)
 [![Platform](https://img.shields.io/badge/platform-Windows-blue.svg)](https://www.microsoft.com/windows/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 <!-- md-i18n:switcher -->
-**Read this in:** [English](README.md) · [Deutsch](README.de.md) · [中文](README.zh.md) · [हिन्दी](README.hi.md) · [Español](README.es.md) · **Русский**
+**Читать этот документ на:** [English](README.md) · [Deutsch](README.de.md) · [中文](README.zh.md) · [हिन्दी](README.hi.md) · [Español](README.es.md) · **Русский**
+
+<p align="center"><img src="https://github.com/paulmann/Import-CaCertificates/raw/main/assets/social-preview.png" alt="Import-CaCertificates — pinned SHA-256 fingerprints, safe CA import" width="100%"></p>
+
+[Wiki](https://github.com/paulmann/Import-CaCertificates/wiki) · [Сайт документации](https://paulmann.github.io/Import-CaCertificates/) · [Релизы](https://github.com/paulmann/Import-CaCertificates/releases) ·
+[Проблемы](https://github.com/paulmann/Import-CaCertificates/issues) · [Безопасность](SECURITY.md) · [Для агентов](AGENTS.md)
+
+## Содержание
 
 - [1. Обзор](#1-обзор)
 - [2. Что изменилось в 2.0.0](#2-что-изменилось-в-200)
@@ -22,6 +34,7 @@
 - [12. Устранение неполадок](#12-устранение-неполадок)
 - [13. Разработка](#13-разработка)
 - [14. Лицензия и поддержка](#14-лицензия-и-поддержка)
+- [15. Документация](#15-документация)
 
 ***
 
@@ -397,14 +410,16 @@ CI запускает PSScriptAnalyzer и Pester на каждый push и pull 
 
 ### Лицензия
 
-Проект распространяется по **лицензии MIT** — см. [LICENSE](LICENSE). Вы можете использовать, изменять, распространять и продавать копии при сохранении уведомления об авторских правах и разрешающего уведомления.
+Проект распространяется по **лицензии MIT** — см. [LICENSE](LICENSE). Вы можете использовать,
+изменять, распространять и продавать копии при сохранении уведомления об авторских правах
+и разрешающего уведомления.
 
 Версии до 2.0.0 включительно публиковались под PolyForm Noncommercial License 1.0.0; начиная с 2.0.1 действует лицензия MIT.
 
 ### Автор
 
 Mikhail Deynekin — [GitHub: paulmann](https://github.com/paulmann) —
-m@deynekin.com
+paulmann@users.noreply.github.com
 
 ### Сообщения об уязвимостях
 
@@ -415,3 +430,17 @@ m@deynekin.com
 
 Если этот инструмент помог вам решить проблему с сертификатами, упомяните его в своём
 runbook с указанием версии и ссылки. Не создавайте звёзды, форки и комментарии автоматически.
+
+## 15. Документация
+
+| Ресурс | Что внутри |
+|---|---|
+| [Wiki](https://github.com/paulmann/Import-CaCertificates/wiki) | Статьи по установке, параметрам и устранению неполадок как страницы вики. |
+| [Сайт документации](https://paulmann.github.io/Import-CaCertificates/) | Та же справка в виде просматриваемого сайта. |
+| [Релизы](https://github.com/paulmann/Import-CaCertificates/releases) | История версий, заметки о выпуске и архивы с контрольными суммами. |
+| [Примеры](docs/EXAMPLES.md) | Сценарии под конкретные задачи для типичных проблем с сертификатами. |
+| [Модель безопасности](docs/SECURITY-MODEL.md) | Модель угроз, гарантии и границы закрепления отпечатков. |
+| [Для агентов](AGENTS.md) | Карта репозитория и инструкции для автоматизированных агентов. |
+| [Политика безопасности](SECURITY.md) | Как сообщить об уязвимости конфиденциально. |
+| [Участие](CONTRIBUTING.md) | Процесс разработки, тесты и правила для pull request. |
+| [Журнал изменений](CHANGELOG.md) | Что изменилось в каждом выпуске. |

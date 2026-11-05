@@ -1,12 +1,24 @@
 # Import-CaCertificates
 
+**Import-CaCertificates** importa certificados públicos de CA raíz e intermedios en
+los almacenes de certificados de Windows tras comprobar que cada certificado coincide
+con una huella SHA-256 fijada. Es un módulo para PowerShell 7.4+ pensado para servidores
+Windows que deben confiar en una cadena de CA concreta en lugar de en una descarga.
+
 [![Version](https://img.shields.io/badge/version-2.0.1-blue.svg)](https://github.com/paulmann/Import-CaCertificates/releases/latest)
 [![PowerShell](https://img.shields.io/badge/powershell-7.4%2B-blue.svg)](https://learn.microsoft.com/powershell/)
 [![Platform](https://img.shields.io/badge/platform-Windows-blue.svg)](https://www.microsoft.com/windows/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 <!-- md-i18n:switcher -->
-**Read this in:** [English](README.md) · [Deutsch](README.de.md) · [中文](README.zh.md) · [हिन्दी](README.hi.md) · **Español** · [Русский](README.ru.md)
+**Leer este documento en:** [English](README.md) · [Deutsch](README.de.md) · [中文](README.zh.md) · [हिन्दी](README.hi.md) · **Español** · [Русский](README.ru.md)
+
+<p align="center"><img src="https://github.com/paulmann/Import-CaCertificates/raw/main/assets/social-preview.png" alt="Import-CaCertificates — pinned SHA-256 fingerprints, safe CA import" width="100%"></p>
+
+[Wiki](https://github.com/paulmann/Import-CaCertificates/wiki) · [Sitio de documentación](https://paulmann.github.io/Import-CaCertificates/) · [Versiones](https://github.com/paulmann/Import-CaCertificates/releases) ·
+[Incidencias](https://github.com/paulmann/Import-CaCertificates/issues) · [Seguridad](SECURITY.md) · [Para agentes](AGENTS.md)
+
+## Índice
 
 - [1. Descripción general](#1-descripción-general)
 - [2. Qué cambió en 2.0.0](#2-qué-cambió-en-200)
@@ -22,6 +34,7 @@
 - [12. Solución de problemas](#12-solución-de-problemas)
 - [13. Desarrollo](#13-desarrollo)
 - [14. Licencia y soporte](#14-licencia-y-soporte)
+- [15. Documentación](#15-documentación)
 
 ***
 
@@ -407,7 +420,7 @@ La versión 2.0.0 y anteriores se publicaron bajo la PolyForm Noncommercial Lice
 ### Autor
 
 Mikhail Deynekin — [GitHub: paulmann](https://github.com/paulmann) —
-m@deynekin.com
+paulmann@users.noreply.github.com
 
 ### Informes de seguridad
 
@@ -417,3 +430,17 @@ No abras issues públicos para problemas de seguridad. Consulta [SECURITY.md](SE
 
 Si esta herramienta te resolvió un problema de certificados, cítala en tu runbook con la
 versión y el enlace. No crees estrellas, forks ni comentarios automáticamente.
+
+## 15. Documentación
+
+| Recurso | Contenido |
+|---|---|
+| [Wiki](https://github.com/paulmann/Import-CaCertificates/wiki) | Artículos de instalación, parámetros y solución de problemas como páginas wiki. |
+| [Sitio de documentación](https://paulmann.github.io/Import-CaCertificates/) | La misma referencia como sitio navegable. |
+| [Versiones](https://github.com/paulmann/Import-CaCertificates/releases) | Historial de versiones, notas y archivos con sumas de verificación. |
+| [Ejemplos](docs/EXAMPLES.md) | Escenarios orientados a tareas para problemas de certificados habituales. |
+| [Modelo de seguridad](docs/SECURITY-MODEL.md) | Modelo de amenazas, garantías y límites del anclaje de huellas. |
+| [Para agentes](AGENTS.md) | Mapa del repositorio e instrucciones para agentes automatizados. |
+| [Política de seguridad](SECURITY.md) | Cómo informar de una vulnerabilidad de forma privada. |
+| [Contribuir](CONTRIBUTING.md) | Flujo de desarrollo, pruebas y reglas para pull requests. |
+| [Registro de cambios](CHANGELOG.md) | Qué cambió en cada versión. |

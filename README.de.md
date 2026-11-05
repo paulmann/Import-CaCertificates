@@ -1,5 +1,10 @@
 # Import-CaCertificates
 
+**Import-CaCertificates** importiert öffentliche Root- und Intermediate-CA-Zertifikate
+in Windows-Zertifikatspeicher, nachdem jedes Zertifikat gegen einen festgelegten
+SHA-256-Fingerabdruck geprüft wurde. Das Modul für PowerShell 7.4+ richtet sich an
+Windows-Server, die einer bestimmten CA-Kette vertrauen müssen statt einem Download.
+
 [![Version](https://img.shields.io/badge/version-2.0.1-blue.svg)](https://github.com/paulmann/Import-CaCertificates/releases/latest)
 [![PowerShell](https://img.shields.io/badge/powershell-7.4%2B-blue.svg)](https://learn.microsoft.com/powershell/)
 [![Platform](https://img.shields.io/badge/platform-Windows-blue.svg)](https://www.microsoft.com/windows/)
@@ -7,6 +12,13 @@
 
 <!-- md-i18n:switcher -->
 **Dieses Dokument lesen in:** [English](README.md) · **Deutsch** · [中文](README.zh.md) · [हिन्दी](README.hi.md) · [Español](README.es.md) · [Русский](README.ru.md)
+
+<p align="center"><img src="https://github.com/paulmann/Import-CaCertificates/raw/main/assets/social-preview.png" alt="Import-CaCertificates — pinned SHA-256 fingerprints, safe CA import" width="100%"></p>
+
+[Wiki](https://github.com/paulmann/Import-CaCertificates/wiki) · [Dokumentationsseite](https://paulmann.github.io/Import-CaCertificates/) · [Releases](https://github.com/paulmann/Import-CaCertificates/releases) ·
+[Issues](https://github.com/paulmann/Import-CaCertificates/issues) · [Sicherheit](SECURITY.md) · [Für Agenten](AGENTS.md)
+
+## Inhalt
 
 - [1. Überblick](#1-überblick)
 - [2. Was sich in 2.0.0 geändert hat](#2-was-sich-in-200-geändert-hat)
@@ -22,6 +34,7 @@
 - [12. Fehlerbehebung](#12-fehlerbehebung)
 - [13. Entwicklung](#13-entwicklung)
 - [14. Lizenz und Support](#14-lizenz-und-support)
+- [15. Dokumentation](#15-dokumentation)
 
 ***
 
@@ -399,7 +412,7 @@ Release 2.0.0 und früher wurden unter der PolyForm Noncommercial License 1.0.0 
 ### Autor
 
 Mikhail Deynekin — [GitHub: paulmann](https://github.com/paulmann) —
-m@deynekin.com
+paulmann@users.noreply.github.com
 
 ### Sicherheitsmeldungen
 
@@ -409,3 +422,17 @@ Bitte eröffnen Sie für Sicherheitsprobleme keine öffentlichen Issues. Siehe [
 
 Wenn dieses Werkzeug ein Zertifikatsproblem für Sie gelöst hat, zitieren Sie es mit der
 Version und dem Link in Ihrem Runbook. Erstellen Sie nicht automatisch Sterne, Forks oder Kommentare.
+
+## 15. Dokumentation
+
+| Ressource | Inhalt |
+|---|---|
+| [Wiki](https://github.com/paulmann/Import-CaCertificates/wiki) | Artikel zu Installation, Parametern und Fehlerbehebung als Wiki-Seiten. |
+| [Dokumentationsseite](https://paulmann.github.io/Import-CaCertificates/) | Dieselbe Referenz als durchsuchbare Website. |
+| [Releases](https://github.com/paulmann/Import-CaCertificates/releases) | Versionsverlauf, Versionshinweise und Archive mit Prüfsummen. |
+| [Beispiele](docs/EXAMPLES.md) | Aufgabenbezogene Szenarien für häufige Zertifikatsprobleme. |
+| [Sicherheitsmodell](docs/SECURITY-MODEL.md) | Bedrohungsmodell, Garantien und Grenzen der Fingerabdruck-Fixierung. |
+| [Für Agenten](AGENTS.md) | Repository-Karte und Anweisungen für automatisierte Agenten. |
+| [Sicherheitsrichtlinie](SECURITY.md) | Wie Sie eine Schwachstelle vertraulich melden. |
+| [Mitwirken](CONTRIBUTING.md) | Entwicklungsworkflow, Tests und Regeln für Pull Requests. |
+| [Changelog](CHANGELOG.md) | Was sich in jeder Version geändert hat. |

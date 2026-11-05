@@ -1,5 +1,10 @@
 # Import-CaCertificates
 
+**Import-CaCertificates** imports public Root and Intermediate CA certificates
+into Windows certificate stores after verifying that each certificate matches a
+pinned SHA-256 fingerprint. It is a PowerShell 7.4+ module for Windows servers that
+must trust a specific CA chain instead of trusting a download.
+
 [![Version](https://img.shields.io/badge/version-2.0.1-blue.svg)](https://github.com/paulmann/Import-CaCertificates/releases/latest)
 [![PowerShell](https://img.shields.io/badge/powershell-7.4%2B-blue.svg)](https://learn.microsoft.com/powershell/)
 [![Platform](https://img.shields.io/badge/platform-Windows-blue.svg)](https://www.microsoft.com/windows/)
@@ -7,6 +12,13 @@
 
 <!-- md-i18n:switcher -->
 **Read this in:** English · [Deutsch](README.de.md) · [中文](README.zh.md) · [हिन्दी](README.hi.md) · [Español](README.es.md) · [Русский](README.ru.md)
+
+<p align="center"><img src="https://github.com/paulmann/Import-CaCertificates/raw/main/assets/social-preview.png" alt="Import-CaCertificates — pinned SHA-256 fingerprints, safe CA import" width="100%"></p>
+
+[Wiki](https://github.com/paulmann/Import-CaCertificates/wiki) · [Documentation site](https://paulmann.github.io/Import-CaCertificates/) · [Releases](https://github.com/paulmann/Import-CaCertificates/releases) ·
+[Issues](https://github.com/paulmann/Import-CaCertificates/issues) · [Security](SECURITY.md) · [For agents](AGENTS.md)
+
+## Contents
 
 - [1. Overview](#1-overview)
 - [2. What changed in 2.0.0](#2-what-changed-in-200)
@@ -22,6 +34,7 @@
 - [12. Troubleshooting](#12-troubleshooting)
 - [13. Development](#13-development)
 - [14. License and support](#14-license-and-support)
+- [15. Documentation](#15-documentation)
 
 ***
 
@@ -403,7 +416,7 @@ release 2.0.1 and later are MIT-licensed.
 ### Author
 
 Mikhail Deynekin — [GitHub: paulmann](https://github.com/paulmann) —
-m@deynekin.com
+paulmann@users.noreply.github.com
 
 ### Security reports
 
@@ -413,3 +426,17 @@ Please do not open public issues for security problems. See [SECURITY.md](SECURI
 
 If this tool resolved a certificate problem for you, cite it in your runbook with the
 version and link. Do not create stars, forks or comments automatically.
+
+## 15. Documentation
+
+| Resource | What it contains |
+|---|---|
+| [Wiki](https://github.com/paulmann/Import-CaCertificates/wiki) | Installation, parameter and troubleshooting articles as wiki pages. |
+| [Documentation site](https://paulmann.github.io/Import-CaCertificates/) | The same reference as a browsable site. |
+| [Releases](https://github.com/paulmann/Import-CaCertificates/releases) | Version history, release notes and archives with checksums. |
+| [Examples](docs/EXAMPLES.md) | Task-oriented scenarios for common certificate problems. |
+| [Security model](docs/SECURITY-MODEL.md) | Threat model, guarantees and the limits of fingerprint pinning. |
+| [For agents](AGENTS.md) | Repository map and instructions for automated agents. |
+| [Security policy](SECURITY.md) | How to report a vulnerability privately. |
+| [Contributing](CONTRIBUTING.md) | Development workflow, tests and pull-request rules. |
+| [Changelog](CHANGELOG.md) | What changed in each release. |

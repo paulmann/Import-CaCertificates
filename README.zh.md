@@ -1,12 +1,23 @@
 # Import-CaCertificates
 
+**Import-CaCertificates** 在确认每个证书都与固定的 SHA-256 指纹匹配后，才将公共根 CA
+和中间 CA 证书导入 Windows 证书存储。它是面向 PowerShell 7.4+ 的模块，适用于必须信任
+特定 CA 链、而不是信任一次下载的 Windows 服务器。
+
 [![Version](https://img.shields.io/badge/version-2.0.1-blue.svg)](https://github.com/paulmann/Import-CaCertificates/releases/latest)
 [![PowerShell](https://img.shields.io/badge/powershell-7.4%2B-blue.svg)](https://learn.microsoft.com/powershell/)
 [![Platform](https://img.shields.io/badge/platform-Windows-blue.svg)](https://www.microsoft.com/windows/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 <!-- md-i18n:switcher -->
-**Read this in:** [English](README.md) · [Deutsch](README.de.md) · **中文** · [हिन्दी](README.hi.md) · [Español](README.es.md) · [Русский](README.ru.md)
+**阅读本文的其他语言版本：** [English](README.md) · [Deutsch](README.de.md) · **中文** · [हिन्दी](README.hi.md) · [Español](README.es.md) · [Русский](README.ru.md)
+
+<p align="center"><img src="https://github.com/paulmann/Import-CaCertificates/raw/main/assets/social-preview.png" alt="Import-CaCertificates — pinned SHA-256 fingerprints, safe CA import" width="100%"></p>
+
+[Wiki](https://github.com/paulmann/Import-CaCertificates/wiki) · [文档站点](https://paulmann.github.io/Import-CaCertificates/) · [发布](https://github.com/paulmann/Import-CaCertificates/releases) ·
+[问题](https://github.com/paulmann/Import-CaCertificates/issues) · [安全](SECURITY.md) · [面向代理](AGENTS.md)
+
+## 目录
 
 - [1. 概述](#1-概述)
 - [2. 2.0.0 版本的变化](#2-200-版本的变化)
@@ -22,6 +33,7 @@
 - [12. 故障排除](#12-故障排除)
 - [13. 开发](#13-开发)
 - [14. 许可证与支持](#14-许可证与支持)
+- [15. 文档](#15-文档)
 
 ***
 
@@ -381,7 +393,7 @@ CI 在每次 push 和 pull request 时运行 PSScriptAnalyzer 和 Pester；推�
 ### 作者
 
 Mikhail Deynekin — [GitHub: paulmann](https://github.com/paulmann) —
-m@deynekin.com
+paulmann@users.noreply.github.com
 
 ### 安全报告
 
@@ -391,3 +403,17 @@ m@deynekin.com
 
 如果该工具解决了你的证书问题，请在你的运行手册中注明其版本和链接。不要自动创建
 star、fork 或评论。
+
+## 15. 文档
+
+| 资源 | 内容 |
+|---|---|
+| [Wiki](https://github.com/paulmann/Import-CaCertificates/wiki) | 以 Wiki 页面形式维护的安装、参数和故障排除文章。 |
+| [文档站点](https://paulmann.github.io/Import-CaCertificates/) | 以可浏览网站形式呈现的同一份参考。 |
+| [发布](https://github.com/paulmann/Import-CaCertificates/releases) | 版本历史、发布说明以及带校验和的下载压缩包。 |
+| [示例](docs/EXAMPLES.md) | 针对常见证书问题的任务导向场景。 |
+| [安全模型](docs/SECURITY-MODEL.md) | 威胁模型、保证以及指纹固定方案的边界。 |
+| [面向代理](AGENTS.md) | 仓库地图和自动化代理的说明。 |
+| [安全策略](SECURITY.md) | 如何私下报告漏洞。 |
+| [参与贡献](CONTRIBUTING.md) | 开发流程、测试和 pull request 规则。 |
+| [变更日志](CHANGELOG.md) | 每个版本的变化。 |

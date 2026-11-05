@@ -1,12 +1,24 @@
 # Import-CaCertificates
 
+**Import-CaCertificates** सार्वजनिक रूट और इंटरमीडिएट CA प्रमाणपत्रों को Windows
+प्रमाणपत्र स्टोर में तभी आयात करता है जब हर प्रमाणपत्र पहले से तय SHA-256 फ़िंगरप्रिंट
+से मेल खाता हो। यह PowerShell 7.4+ के लिए एक मॉड्यूल है, उन Windows सर्वरों के लिए
+जिन्हें किसी डाउनलोड के बजाय किसी खास CA श्रृंखला पर भरोसा करना होता है।
+
 [![Version](https://img.shields.io/badge/version-2.0.1-blue.svg)](https://github.com/paulmann/Import-CaCertificates/releases/latest)
 [![PowerShell](https://img.shields.io/badge/powershell-7.4%2B-blue.svg)](https://learn.microsoft.com/powershell/)
 [![Platform](https://img.shields.io/badge/platform-Windows-blue.svg)](https://www.microsoft.com/windows/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 <!-- md-i18n:switcher -->
-**Read this in:** [English](README.md) · [Deutsch](README.de.md) · [中文](README.zh.md) · **हिन्दी** · [Español](README.es.md) · [Русский](README.ru.md)
+**यह दस्तावेज़ पढ़ें:** [English](README.md) · [Deutsch](README.de.md) · [中文](README.zh.md) · **हिन्दी** · [Español](README.es.md) · [Русский](README.ru.md)
+
+<p align="center"><img src="https://github.com/paulmann/Import-CaCertificates/raw/main/assets/social-preview.png" alt="Import-CaCertificates — pinned SHA-256 fingerprints, safe CA import" width="100%"></p>
+
+[Wiki](https://github.com/paulmann/Import-CaCertificates/wiki) · [दस्तावेज़ साइट](https://paulmann.github.io/Import-CaCertificates/) · [रिलीज़](https://github.com/paulmann/Import-CaCertificates/releases) ·
+[इश्यूज़](https://github.com/paulmann/Import-CaCertificates/issues) · [सुरक्षा](SECURITY.md) · [एजेंट के लिए](AGENTS.md)
+
+## विषय-सूची
 
 - [1. अवलोकन](#1-अवलोकन)
 - [2. 2.0.0 में क्या बदला](#2-200-में-क्या-बदला)
@@ -22,6 +34,7 @@
 - [12. समस्या निवारण](#12-समस्या-निवारण)
 - [13. विकास](#13-विकास)
 - [14. लाइसेंस और सहायता](#14-लाइसेंस-और-सहायता)
+- [15. दस्तावेज़ीकरण](#15-दस्तावेज़ीकरण)
 
 ***
 
@@ -400,7 +413,7 @@ CI हर push और pull request पर PSScriptAnalyzer और Pester चल�
 ### लेखक
 
 Mikhail Deynekin — [GitHub: paulmann](https://github.com/paulmann) —
-m@deynekin.com
+paulmann@users.noreply.github.com
 
 ### सुरक्षा रिपोर्ट
 
@@ -410,3 +423,17 @@ m@deynekin.com
 
 यदि इस उपकरण ने आपकी प्रमाणपत्र समस्या हल की, तो अपने रनबुक में संस्करण और लिंक के साथ
 इसका उल्लेख करें। स्वचालित रूप से star, fork या टिप्पणियाँ न बनाएँ।
+
+## 15. दस्तावेज़ीकरण
+
+| संसाधन | विवरण |
+|---|---|
+| [Wiki](https://github.com/paulmann/Import-CaCertificates/wiki) | इंस्टॉलेशन, पैरामीटर और समस्या निवारण लेख विकी पृष्ठों के रूप में। |
+| [दस्तावेज़ साइट](https://paulmann.github.io/Import-CaCertificates/) | वही संदर्भ ब्राउज़ करने योग्य साइट के रूप में। |
+| [रिलीज़](https://github.com/paulmann/Import-CaCertificates/releases) | संस्करण इतिहास, रिलीज़ नोट्स और चेकसम वाले संग्रह। |
+| [उदाहरण](docs/EXAMPLES.md) | आम प्रमाणपत्र समस्याओं के लिए कार्य-केंद्रित परिदृश्य। |
+| [सुरक्षा मॉडल](docs/SECURITY-MODEL.md) | खतरा मॉडल, गारंटी और फ़िंगरप्रिंट पिनिंग की सीमाएँ। |
+| [एजेंट के लिए](AGENTS.md) | रिपॉज़िटरी मैप और स्वचालित एजेंट के लिए निर्देश। |
+| [सुरक्षा नीति](SECURITY.md) | किसी भेद्यता की निजी रूप से रिपोर्ट कैसे करें। |
+| [योगदान](CONTRIBUTING.md) | विकास प्रक्रिया, परीक्षण और pull request नियम। |
+| [चेंजलॉग](CHANGELOG.md) | हर संस्करण में क्या बदला। |
