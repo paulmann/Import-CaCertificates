@@ -75,7 +75,7 @@ request just to make a test pass; write a unit test with `-WhatIf` or
 
 Use the conventional style already used in the repository:
 
-```
+```text
 feat(module): add multi-certificate PEM parsing
 fix(wrapper): map -KeepFiles alias to -KeepTempFiles
 docs(readme): document the SHA-256 requirement
