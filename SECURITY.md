@@ -11,8 +11,10 @@
 
 Do **not** open a public issue for a security problem.
 
-Send a report to **m@deynekin.com** with the subject `Import-CaCertificates security`
-and include:
+Report it privately through GitHub: open the repository's **Security** tab, choose
+**Advisories**, then **Report a vulnerability**. The advisory is visible only to you and
+the maintainer. If the form is unavailable, contact the maintainer through
+<https://github.com/paulmann> and ask for a private channel. Include:
 
 - affected version (from the release tag or `Get-Module Import-CaCertificates`),
 - operating system and PowerShell version,
