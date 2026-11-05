@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-label="Import-CaCertificates — Imports public Root and Intermediate CA certificates into Windows certificate stores only after a pinned SHA-256 fingerprint matches.">
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="1" stop-color="#1b3354"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="640" fill="url(#background)"/>
+  <rect x="0" y="0" width="1280" height="5" rx="0" fill="#4f9cf9" stroke="#4f9cf9" stroke-width="1"/>
+  <text x="48" y="84" font-family="Consolas, 'DejaVu Sans Mono', monospace" font-size="17" fill="#4f9cf9" text-anchor="start">WINDOWS CA IMPORTER</text>
+  <text x="48" y="172" font-family="Consolas, 'DejaVu Sans Mono', monospace" font-size="76" font-weight="700" fill="#e6edf3" text-anchor="start"><tspan x="48"><tspan fill="#4f9cf9">I</tspan>mport-CaCertificates</tspan></text>
+  <text x="48" y="242" font-family="'Segoe UI', 'DejaVu Sans', sans-serif" font-size="30" font-weight="700" fill="#e6edf3" text-anchor="start">Imports public Root and Intermediate CA certificates into Windows certificate</text>
+  <text x="48" y="280" font-family="'Segoe UI', 'DejaVu Sans', sans-serif" font-size="30" font-weight="700" fill="#e6edf3" text-anchor="start">stores only after a pinned SHA-256 fingerprint matches.</text>
+  <text x="48" y="342" font-family="'Segoe UI', 'DejaVu Sans', sans-serif" font-size="20" fill="#96a4b2" text-anchor="start">PowerShell 7.4+ module and CLI. HTTPS only, -WhatIf dry runs, JSON reports and exit codes.</text>
+  <rect x="48" y="368" width="123" height="36" rx="18" fill="#141d29" stroke="#2a3848" stroke-width="1"/>
+  <text x="66" y="392" font-family="'Segoe UI', 'DejaVu Sans', sans-serif" font-size="18" fill="#96a4b2" text-anchor="start">MIT license</text>
+  <rect x="183" y="368" width="151" height="36" rx="18" fill="#141d29" stroke="#2a3848" stroke-width="1"/>
+  <text x="201" y="392" font-family="'Segoe UI', 'DejaVu Sans', sans-serif" font-size="18" fill="#96a4b2" text-anchor="start">38 Pester tests</text>
+  <rect x="346" y="368" width="179" height="36" rx="18" fill="#141d29" stroke="#2a3848" stroke-width="1"/>
+  <text x="364" y="392" font-family="'Segoe UI', 'DejaVu Sans', sans-serif" font-size="18" fill="#96a4b2" text-anchor="start">4 certificate stores</text>
+  <rect x="537" y="368" width="164" height="36" rx="18" fill="#141d29" stroke="#2a3848" stroke-width="1"/>
+  <text x="555" y="392" font-family="'Segoe UI', 'DejaVu Sans', sans-serif" font-size="18" fill="#96a4b2" text-anchor="start">0/1/2 exit codes</text>
+  <rect x="48" y="416" width="1184" height="154" rx="16" fill="#0a1018" stroke="#22303f" stroke-width="1"/>
+  <circle cx="68" cy="438" r="6" fill="#ff5f56"/>
+  <circle cx="90" cy="438" r="6" fill="#ffbd2e"/>
+  <circle cx="112" cy="438" r="6" fill="#27c93f"/>
+  <line x1="48" y1="460" x2="1232" y2="460" stroke="#22303f" stroke-width="1"/>
+  <text x="144" y="443" font-family="Consolas, 'DejaVu Sans Mono', monospace" font-size="15" fill="#96a4b2" text-anchor="start">Import-CaCertificates · paulmann.github.io/Import-CaCertificates</text>
+  <text x="76" y="486" font-family="Consolas, 'DejaVu Sans Mono', monospace" font-size="17" fill="#e6edf3" text-anchor="start"><tspan fill="#4f9cf9">$ </tspan>Import-CaCertificate -Uri &lt;url&gt; -Thumbprint &lt;sha256&gt; -WhatIf</text>
+  <text x="76" y="513" font-family="Consolas, 'DejaVu Sans Mono', monospace" font-size="17" fill="#96a4b2" text-anchor="start">[Info] Certificate: Subject='CN=ISRG Root X1'</text>
+  <text x="76" y="540" font-family="Consolas, 'DejaVu Sans Mono', monospace" font-size="17" fill="#96a4b2" text-anchor="start">Finished: total=1, imported=0, whatIf=1</text>
+  <text x="48" y="606" font-family="'Segoe UI', 'DejaVu Sans', sans-serif" font-size="19" font-weight="700" fill="#e6edf3" text-anchor="start">github.com/paulmann/Import-CaCertificates</text>
+  <text x="1232" y="606" font-family="'Segoe UI', 'DejaVu Sans', sans-serif" font-size="19" font-weight="700" fill="#e6edf3" text-anchor="end">paulmann.github.io/Import-CaCertificates</text>
+  <circle cx="840.015625" cy="599" r="5" fill="#3fb950"/>
+</svg>
