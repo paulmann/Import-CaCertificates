@@ -6,10 +6,10 @@
 [![License](https://img.shields.io/badge/license-PolyForm%20Noncommercial-lightgrey.svg)](LICENSE)
 
 <!-- md-i18n:switcher -->
-**Read this in:** [English](README.md) · **Deutsch** · [中文](README.zh.md) · [हिन्दी](README.hi.md) · [Español](README.es.md) · [Русский](README.ru.md)
+**Dieses Dokument lesen in:** [English](README.md) · **Deutsch** · [中文](README.zh.md) · [हिन्दी](README.hi.md) · [Español](README.es.md) · [Русский](README.ru.md)
 
 - [1. Überblick](#1-überblick)
-- [2. Was ist neu in 2.0.0](#2-was-ist-neu-in-200)
+- [2. Was sich in 2.0.0 geändert hat](#2-was-sich-in-200-geändert-hat)
 - [3. Funktionen](#3-funktionen)
 - [4. Sicherheitsmodell](#4-sicherheitsmodell)
 - [5. Anforderungen](#5-anforderungen)
@@ -28,100 +28,95 @@
 ## 1. Überblick
 
 **Import-CaCertificates** importiert öffentliche CA-Zertifikate (Root und Intermediate) in
-Windows-Zertifikatspeicher. Das Werkzeug ist für Server hinter strengen Firewalls und für
-Umgebungen gedacht, die einer bestimmten CA-Kette vertrauen müssen — zum Beispiel
-hMailServer, Exim unter Windows, IIS oder eine interne Unternehmens-PKI.
+Windows-Zertifikatspeicher. Es ist für Server hinter restriktiven Firewalls und für
+Umgebungen gedacht, die einer bestimmten CA-Kette vertrauen müssen — zum Beispiel hMailServer,
+Exim unter Windows, IIS oder eine interne Unternehmens-PKI.
 
-Der Umfang ist bewusst eng: Das Werkzeug lädt öffentliche Zertifikate herunter oder liest
-sie aus Dateien, prüft, dass es die erwarteten Zertifikate sind, und importiert sie in die
-Speicher `LocalMachine` oder `CurrentUser`. Es fordert, erneuert, sichert, listet oder
-löscht keine Zertifikate und importiert niemals private Schlüssel.
+Das Werkzeug ist bewusst eng gefasst: Es lädt öffentliche Zertifikate herunter oder liest
+sie aus Dateien, prüft, dass es die erwarteten Zertifikate sind, und importiert sie in
+`LocalMachine`- oder `CurrentUser`-Speicher. Es fordert keine Zertifikate an, erneuert, sichert, listet
+oder entfernt sie nicht und importiert niemals private Schlüssel.
 
-Der Import eines Root-CA ist eine Vertrauensentscheidung für den gesamten Rechner. Version
-2.0.0 verlangt daher für jedes importierte Zertifikat einen erwarteten SHA-256-Fingerabdruck
-und verweigert den Import eines Root-CA ohne diesen, sofern nicht ausdrücklich
-`-AllowUnverifiedRoot` angegeben wird.
+Das Importieren einer Root-CA ist eine maschinenweite Vertrauensentscheidung. Version 2.0.0 verlangt
+daher für jedes importierte Zertifikat einen erwarteten SHA-256-Fingerabdruck und verweigert einen Root-CA-Import
+ohne diesen, sofern nicht der ausdrückliche Schalter `-AllowUnverifiedRoot` verwendet wird.
 
-## 2. Was ist neu in 2.0.0
+## 2. Was sich in 2.0.0 geändert hat
 
-Version 2.0.0 ist eine sicherheitsorientierte Neufassung. Das Verhalten der Befehle hat sich
-bewusst geändert; lesen Sie vor dem Upgrade [CHANGELOG.md](CHANGELOG.md) und
-[Migration von 1.x](#11-migration-von-1x).
+Version 2.0.0 ist eine sicherheitsorientierte Neufassung. Das Verhalten des Befehls hat sich
+absichtlich geändert; siehe [CHANGELOG.md](CHANGELOG.md) und
+[Migration von 1.x](#11-migration-von-1x), bevor Sie aktualisieren.
 
-- Aus einem einzelnen Skript wurde ein Modul (`Import-CaCertificate`) plus ein schlanker
-  CLI-Wrapper.
-- Root-CA-Importe erfordern einen festgelegten SHA-256-Fingerabdruck; der alte Ablauf nur
-  mit `-RootUrl` wird abgelehnt, statt stillschweigend vertraut.
-- Reine HTTP-URLs, PFX/P12-Dateien und Dateien mit privaten Schlüsseln werden abgelehnt.
+- Das einzelne Skript wurde zu einem Modul (`Import-CaCertificate`) plus einem dünnen CLI-Wrapper.
+- Root-CA-Importe erfordern einen festgelegten SHA-256-Fingerabdruck; der alte Ablauf nur mit
+  `-RootUrl` wird verweigert, statt stillschweigend vertraut zu werden.
+- Reine HTTP-URLs, PFX-/P12-Dateien und Dateien mit privaten Schlüsseln werden abgelehnt.
 - Zertifikate werden validiert (Gültigkeitszeitraum, CA-Rolle, Key Usage, Signaturalgorithmus),
-  und ein Root/Intermediate-Paar wird vor dem Import auf die Kette geprüft.
-- Mehrfachzertifikat-PEM-Bündel, lokale Dateien und Verzeichnisse werden unterstützt.
-- Die Deduplizierung erfolgt über den SHA-256-Fingerabdruck (der SHA-1-Fingerabdruck wird
-  gemeldet, ist aber nicht die Identitätsprüfung).
-- Strukturierte Ergebnisse (`-PassThru`), JSON-Berichte (`-Json`), Protokolldateien
-  (`-LogFile`), Exit-Codes sowie Pester/PSScriptAnalyzer-CI wurden ergänzt.
+  und ein Root-/Intermediate-Paar wird vor dem Import auf die Kette geprüft.
+- Mehrzertifikat-PEM-Bündel, lokale Dateien und Verzeichnisse werden unterstützt.
+- Die Deduplizierung verwendet den SHA-256-Fingerabdruck (der SHA-1-Thumbprint wird gemeldet, ist
+  aber nicht die Identitätsprüfung).
+- Strukturierte Ergebnisse (`-PassThru`), JSON-Berichte (`-Json`), Protokolldateien (`-LogFile`),
+  Exit-Codes sowie Pester-/PSScriptAnalyzer-CI kamen hinzu.
 
 ## 3. Funktionen
 
-- **Explizite Vertrauensanker**: Jedes importierte Zertifikat muss mit einem über
-  `-Thumbprint` übergebenen SHA-256-Fingerabdruck übereinstimmen.
-- **Sichere Standardwerte für Root-CAs**: Ein Root-CA-Import ohne Fingerabdruck wird
-  abgelehnt; `-AllowUnverifiedRoot` ist die ausdrückliche, deutlich gemeldete Ausnahme.
-- **Nur HTTPS**: `http://`-URLs werden vor jeder Anfrage abgelehnt.
-- **Nur öffentliche Zertifikate**: PFX/P12-Dateien und jede Datei mit einem privaten
-  Schlüssel werden abgelehnt.
+- **Ausdrückliche Vertrauensanker**: Jedes importierte Zertifikat muss zu einem erwarteten
+  SHA-256-Fingerabdruck passen, der mit `-Thumbprint` übergeben wird.
+- **Sichere Standardeinstellungen für Root-CAs**: Ein Root-CA-Import ohne Fingerabdruck wird verweigert;
+  `-AllowUnverifiedRoot` ist die ausdrückliche, deutlich gemeldete Ausnahme.
+- **Nur HTTPS**: `http://`-URLs werden abgelehnt, bevor eine Anfrage erfolgt.
+- **Nur öffentliche Zertifikate**: PFX-/P12-Dateien und jede Datei mit einem privaten Schlüssel
+  werden abgelehnt.
 - **Validierung**: X.509-Parsing, `NotBefore`/`NotAfter`, Basic Constraints `CA=true`,
-  Key Usage `keyCertSign`, fehlerhafte Signaturalgorithmen (MD2/MD5) und schwache
-  Schlüssellängen.
-- **Kettenprüfung**: Wenn ein Root und ein Intermediate im selben Satz ankommen, muss das
-  Intermediate zum übergebenen Root führen (`-SkipChainValidation` deaktiviert die Prüfung).
-- **Flexible Eingabe**: HTTPS-URL, lokale PEM/DER-Datei, Base64-DER,
-  Mehrfachzertifikat-PEM-Bündel oder ein Verzeichnis mit Zertifikatsdateien.
-- **Idempotente Speicherzugriffe**: Ein Zertifikat mit demselben SHA-256-Fingerabdruck wird
+  Key Usage `keyCertSign`, defekte Signaturalgorithmen (MD2/MD5) und schwache Schlüssellängen.
+- **Kettenvalidierung**: Wenn eine Root und ein Intermediate im selben Lauf ankommen, muss der
+  Intermediate zur übergebenen Root passen (`-SkipChainValidation` zum Abwählen).
+- **Flexible Eingabe**: HTTPS-URL, lokale PEM-/DER-Datei, Base64-DER, Mehrzertifikat-PEM-Bündel
+  oder ein Verzeichnis mit Zertifikatsdateien.
+- **Idempotente Speicher-Schreibvorgänge**: Ein Zertifikat mit demselben SHA-256-Fingerabdruck wird
   übersprungen; `-Force` ersetzt eine vorhandene Kopie, überspringt aber nie die Prüfung.
 - **Automatisierungsfreundlich**: `-WhatIf`, `-Confirm`, `-PassThru`, `-Json`, `-LogFile`,
-  `-LogLevel` und unterscheidbare Exit-Codes.
-- **Windows-Speicher**: `LocalMachine` (Standard, erhöhte Rechte) und `CurrentUser`, sowie
-  die Speicher `Root`, `CA`, `AuthRoot` und `TrustedPeople`.
+  `-LogLevel` und eigene Exit-Codes.
+- **Windows-Speicher**: `LocalMachine` (Standard, erhöhte Rechte) und `CurrentUser`, Speicher
+  `Root`, `CA`, `AuthRoot` und `TrustedPeople`.
 
 ## 4. Sicherheitsmodell
 
-Das vollständige Bedrohungsmodell steht in [docs/SECURITY-MODEL.md](docs/SECURITY-MODEL.md).
-Die Kurzfassung:
+Das vollständige Bedrohungsmodell steht in [docs/SECURITY-MODEL.md](docs/SECURITY-MODEL.md). Die kurze
+Fassung:
 
-1. Für Downloads wird **ausschließlich HTTPS** akzeptiert.
-2. **Der erwartete SHA-256-Fingerabdruck ist Pflicht** für jedes importierte Zertifikat. Für
-   ein Root-CA ist er Pflicht, sofern nicht ausdrücklich `-AllowUnverifiedRoot` übergeben wird.
-3. **Das Zertifikat wird vor jedem Speicherzugriff geprüft**: als X.509 geparst, innerhalb
-   seiner Gültigkeit, als CA gekennzeichnet, zur Zertifikatssignatur berechtigt und mit einem
+1. **Nur HTTPS** wird für Downloads akzeptiert.
+2. **Der erwartete SHA-256-Fingerabdruck ist Pflicht** für jedes importierte Zertifikat.
+   Für eine Root-CA ist er Pflicht, sofern nicht `-AllowUnverifiedRoot` ausdrücklich übergeben wird.
+3. **Das Zertifikat wird vor jedem Schreiben in den Speicher validiert**: als X.509 geparst, innerhalb seines
+   Gültigkeitszeitraums, als CA markiert, zum Signieren von Zertifikaten berechtigt und mit einem
    akzeptablen Algorithmus signiert.
-4. **Das Zertifikat enthält keinen privaten Schlüssel**: Dateien mit privaten Schlüsseln und
-   PFX/P12-Container werden abgelehnt.
-5. **Bestätigung ist der Standard**: `ConfirmImpact = High` bedeutet, dass ein interaktiver
-   Lauf vor dem Schreiben nachfragt; nicht-interaktive Automatisierung muss
-   `-Confirm:$false` übergeben.
-6. **Keine Telemetrie, keine versteckten Netzwerkzugriffe**: Die einzigen Netzwerkanfragen
-   sind die in `-Uri` angegebenen.
+4. **Das Zertifikat ist kein privater Schlüssel**: Dateien, die private Schlüssel enthalten, und
+   PFX-/P12-Container werden abgelehnt.
+5. **Bestätigung ist der Standard**: `ConfirmImpact = High` bedeutet, dass ein interaktiver Lauf
+   vor dem Schreiben fragt; nicht interaktive Automatisierung muss `-Confirm:$false` übergeben.
+6. **Keine Telemetrie, kein versteckter Netzwerkzugriff**: Die einzigen Netzwerkanfragen sind die
+   von Ihnen angegebenen `-Uri`-Werte.
 
-Ein festgelegter Fingerabdruck schützt vor einem ausgetauschten Download, einem
-kompromittierten Mirror oder einer falschen Datei. Er schützt nicht vor einer CA, die
-legitim ein anderes Root-Zertifikat neu ausgestellt hat — deshalb muss der Fingerabdruck von
-der veröffentlichten Seite der CA oder aus Ihrer PKI-Dokumentation stammen, nicht von
-derselben URL, von der Sie die Datei herunterladen.
+Ein festgelegter Fingerabdruck schützt gegen einen ausgetauschten Download, einen kompromittierten Mirror oder
+eine falsche Datei. Er schützt nicht gegen eine CA, die legitim eine andere Root neu ausgestellt hat — deshalb
+muss der Fingerabdruck von der eigenen veröffentlichten Seite der CA oder aus Ihrer PKI-Dokumentation stammen
+und nicht von derselben URL, von der Sie herunterladen.
 
 ## 5. Anforderungen
 
 | Anforderung | Details |
 |---|---|
-| Betriebssystem | Windows 10 (1607 oder neuer), Windows 11, Windows Server 2012 R2 oder neuer |
-| PowerShell | 7.4 oder neuer (`pwsh`). Windows PowerShell 5.1 wird nicht unterstützt. |
+| Betriebssystem | Windows 10 (1607 oder später), Windows 11, Windows Server 2012 R2 oder später |
+| PowerShell | 7.4 oder später (`pwsh`). Windows PowerShell 5.1 wird nicht unterstützt. |
 | Berechtigungen | Lokaler Administrator für `-StoreLocation LocalMachine`; keine Erhöhung für `-StoreLocation CurrentUser` |
-| Netzwerk | HTTPS-Zugriff auf jeden Host in `-Uri`; mit `-Path` nicht erforderlich |
-| Windows 7 / 8.1 | Nicht unterstützt: PowerShell 7 lässt sich dort nicht installieren. Version 1.x behauptete eine nicht vorhandene Unterstützung. |
+| Netzwerk | HTTPS-Zugriff auf jeden `-Uri`-Host; mit `-Path` nicht erforderlich |
+| Windows 7 / 8.1 | Nicht unterstützt: PowerShell 7 lässt sich dort nicht installieren. Version 1.x behauptete eine Unterstützung, die sie nicht hatte. |
 
-Geprüft in CI unter `windows-latest` mit PowerShell 7.x und Pester 5.7.1 sowie lokal unter
-Windows 10/11 mit PowerShell 7.6. Andere Kombinationen sollten funktionieren, sind aber nicht
-durch CI abgedeckt.
+Von CI getestet auf `windows-latest` mit PowerShell 7.x und Pester 5.7.1 sowie lokal auf
+Windows 10/11 mit PowerShell 7.6. Andere Kombinationen sollten funktionieren, werden aber nicht
+von CI abgedeckt.
 
 ## 6. Installation
 
@@ -129,8 +124,7 @@ durch CI abgedeckt.
 
 Laden Sie das neueste `Import-CaCertificates-<version>.zip` und `SHA256SUMS.txt` von der
 [Releases-Seite](https://github.com/paulmann/Import-CaCertificates/releases/latest) herunter,
-prüfen Sie das Archiv und entpacken Sie es in ein Werkzeugverzeichnis wie
-`C:\Tools\Import-CaCertificates`:
+prüfen Sie das Archiv und entpacken Sie es in ein Werkzeugverzeichnis wie `C:\Tools\Import-CaCertificates`:
 
 ```powershell
 $expected = (Select-String -Path .\SHA256SUMS.txt -Pattern '\.zip$').Line.Split(' ')[0]
@@ -139,8 +133,8 @@ Expand-Archive -LiteralPath .\Import-CaCertificates-2.0.0.zip -DestinationPath C
 ```
 
 Das Archiv enthält das Modul (`src/Import-CaCertificates`), den CLI-Wrapper, die
-Dokumentation und die Lizenz. Der Wrapper findet das Modul relativ zu seinem eigenen
-Speicherort, daher kann das entpackte Verzeichnis als Ganzes verschoben werden.
+Dokumentation und die Lizenz. Der Wrapper findet das Modul relativ zu sich selbst, sodass
+das entpackte Verzeichnis als Ganzes verschoben werden kann.
 
 ### Aus dem Quellcode
 
@@ -149,15 +143,14 @@ git clone https://github.com/paulmann/Import-CaCertificates.git
 cd Import-CaCertificates
 ```
 
-Es gibt noch kein Installationsprogramm und kein PSGallery-Paket. Importieren Sie das Modul
-direkt:
+Es gibt noch keinen Installer und kein PSGallery-Paket. Importieren Sie das Modul direkt:
 
 ```powershell
 Import-Module .\src\Import-CaCertificates\Import-CaCertificates.psd1
 Get-Command Import-CaCertificate
 ```
 
-### Prüfen
+### Überprüfen
 
 ```powershell
 Import-Module .\src\Import-CaCertificates\Import-CaCertificates.psd1
@@ -166,17 +159,17 @@ Get-Help Import-CaCertificate -Full
 
 ## 7. Schnellstart
 
-**Schritt 1 — holen Sie den erwarteten SHA-256-Fingerabdruck von der veröffentlichten Seite
-der CA.** Wenn die CA die Zertifikatsdatei veröffentlicht, berechnen Sie den Fingerabdruck
-selbst und vergleichen Sie ihn mit dem Wert, den die CA an anderer Stelle veröffentlicht:
+**Schritt 1 — den erwarteten SHA-256-Fingerabdruck von der veröffentlichten Seite der CA holen.** Wenn die
+CA die Zertifikatsdatei veröffentlicht, berechnen Sie den Fingerabdruck selbst und vergleichen Sie ihn mit
+dem Wert, den die CA anderswo veröffentlicht:
 
 ```powershell
 $cert = [System.Security.Cryptography.X509Certificates.X509Certificate2]::new('C:\certs\ca.pem')
 [Convert]::ToHexString([System.Security.Cryptography.SHA256]::HashData($cert.RawData))
 ```
 
-**Schritt 2 — Probelauf.** `-WhatIf` lädt herunter, parst, validiert und zeigt den Plan; in
-den Speicher wird nichts geschrieben:
+**Schritt 2 — Probelauf.** `-WhatIf` lädt herunter, parst, validiert und gibt den Plan aus; es
+schreibt nicht in den Speicher:
 
 ```powershell
 Import-CaCertificate -Uri 'https://letsencrypt.org/certs/isrgrootx1.pem' `
@@ -184,12 +177,11 @@ Import-CaCertificate -Uri 'https://letsencrypt.org/certs/isrgrootx1.pem' `
     -WhatIf -Confirm:$false
 ```
 
-`96BCEC06…` ist der von Let's Encrypt veröffentlichte SHA-256-Fingerabdruck von ISRG Root
-X1; er dient als funktionierendes Beispiel, nicht als Empfehlung, einer bestimmten CA zu
-vertrauen.
+`96BCEC06…` ist der SHA-256-Fingerabdruck von ISRG Root X1 in der von Let's Encrypt veröffentlichten
+Form; er steht hier als funktionierendes Beispiel, nicht als Empfehlung, irgendeiner CA zu vertrauen.
 
-**Schritt 3 — Importieren.** Ohne `-Confirm:$false` fragt eine interaktive Sitzung vor jedem
-Schreibvorgang nach einer Bestätigung. Automatisierung muss `-Confirm:$false` übergeben:
+**Schritt 3 — importieren.** Ohne `-Confirm:$false` fragt eine interaktive Sitzung vor jedem
+Schreiben in den Speicher nach einer Bestätigung. Automatisierung muss `-Confirm:$false` übergeben:
 
 ```powershell
 Import-CaCertificate -Uri 'https://letsencrypt.org/certs/isrgrootx1.pem' `
@@ -197,18 +189,18 @@ Import-CaCertificate -Uri 'https://letsencrypt.org/certs/isrgrootx1.pem' `
     -Confirm:$false -PassThru
 ```
 
-**Schritt 4 — Speicher prüfen.**
+**Schritt 4 — den Speicher überprüfen.**
 
 ```powershell
 Get-ChildItem Cert:\LocalMachine\Root | Where-Object Subject -match 'ISRG Root X1'
 ```
 
-Starten Sie den Dienst neu, der den unbekannten CA gemeldet hat (zum Beispiel hMailServer),
-damit er den Vertrauensspeicher des Rechners neu einliest.
+Starten Sie den Dienst neu, der die unbekannte CA gemeldet hat (zum Beispiel hMailServer), damit er
+den Vertrauensspeicher der Maschine erneut liest.
 
 ## 8. Anwendungsbeispiele
 
-### Root-CA aus einer lokalen Datei importieren
+### Eine Root-CA aus einer lokalen Datei importieren
 
 ```powershell
 Import-CaCertificate -Path 'C:\certs\root.pem' `
@@ -216,7 +208,7 @@ Import-CaCertificate -Path 'C:\certs\root.pem' `
     -StoreLocation LocalMachine -Confirm:$false
 ```
 
-### Nur ein Intermediate-CA importieren
+### Nur eine Intermediate-CA importieren
 
 Ein nicht selbstsigniertes CA-Zertifikat wird automatisch nach `LocalMachine\CA` geleitet:
 
@@ -224,10 +216,10 @@ Ein nicht selbstsigniertes CA-Zertifikat wird automatisch nach `LocalMachine\CA`
 Import-CaCertificate -Path 'C:\certs\intermediate.pem' -Thumbprint '<sha256>' -Confirm:$false
 ```
 
-### Ein Bündel importieren und den Root überspringen
+### Ein Bündel importieren, die Root überspringen
 
-Ein Mehrfachzertifikat-PEM kann einen Root und ein oder mehrere Intermediates enthalten.
-Legen Sie jedes importierte Zertifikat fest; `-NoRootImport` überspringt den Root:
+Ein Mehrzertifikat-PEM kann eine Root und ein oder mehrere Intermediates enthalten. Legen Sie jedes
+Zertifikat fest, das Sie importieren; `-NoRootImport` überspringt die Root:
 
 ```powershell
 Import-CaCertificate -Path 'C:\certs\chain.pem' `
@@ -241,7 +233,7 @@ Import-CaCertificate -Path 'C:\certs\chain.pem' `
 Import-CaCertificate -Path 'C:\certs\corporate-cas' -Thumbprint '<sha256-1>', '<sha256-2>' -WhatIf -Confirm:$false
 ```
 
-### Automatisierung mit JSON-Bericht
+### Automatisierung mit einem JSON-Bericht
 
 ```powershell
 $report = Import-CaCertificate -Uri 'https://ca.example.com/root.pem' `
@@ -249,9 +241,9 @@ $report = Import-CaCertificate -Uri 'https://ca.example.com/root.pem' `
 $report | Out-File -LiteralPath 'C:\logs\ca-import.json' -Encoding utf8NoBOM
 ```
 
-`-Json` liefert einen JSON-Umschlag (`Version`, `Timestamp`, `Summary`, `Results`). Mit
-`-Json` wird das Informationsprotokoll unterdrückt, sofern `-LogLevel` nicht ausdrücklich
-übergeben wird; stdout enthält dann nur das JSON-Dokument.
+`-Json` gibt einen einzelnen JSON-Umschlag zurück (`Version`, `Timestamp`, `Summary`, `Results`). Mit
+`-Json` wird das Informationsprotokoll unterdrückt, sofern `-LogLevel` nicht ausdrücklich übergeben wird,
+sodass stdout nur das JSON-Dokument enthält.
 
 ### In eine Datei protokollieren
 
@@ -262,9 +254,8 @@ Import-CaCertificate -Path 'C:\certs\root.pem' -Thumbprint '<sha256>' `
 
 ### Offline-/Air-Gap-Host
 
-1. Laden Sie das Zertifikat auf einem anderen Rechner herunter und prüfen Sie den
-   Fingerabdruck.
-2. Kopieren Sie die PEM/DER-Datei (und ihren SHA-256) auf den Zielhost.
+1. Laden Sie das Zertifikat auf einer anderen Maschine herunter und prüfen Sie dessen Fingerabdruck.
+2. Kopieren Sie die PEM-/DER-Datei (und ihre SHA-256) auf den Zielhost.
 3. Führen Sie `Import-CaCertificate -Path ... -Thumbprint ... -Confirm:$false` aus.
 
 ### Eine vorhandene Kopie ersetzen
@@ -273,8 +264,8 @@ Import-CaCertificate -Path 'C:\certs\root.pem' -Thumbprint '<sha256>' `
 Import-CaCertificate -Path 'C:\certs\root.pem' -Thumbprint '<sha256>' -Force -Confirm:$false
 ```
 
-`-Force` ersetzt ein Zertifikat mit demselben SHA-256-Fingerabdruck; die Fingerabdruckprüfung
-wird dadurch nicht umgangen.
+`-Force` ersetzt ein Zertifikat mit demselben SHA-256-Fingerabdruck; es umgeht die
+Fingerabdruckprüfung nicht.
 
 ### Einen Import rückgängig machen
 
@@ -294,23 +285,23 @@ Weitere Szenarien: [docs/EXAMPLES.md](docs/EXAMPLES.md).
 
 | Parameter | Typ | Standard | Beschreibung |
 |---|---|---|---|
-| `-Uri` | string[] | — | HTTPS-URL(s) von Zertifikatsdateien (PEM, DER, Base64-DER oder ein Mehrfachzertifikat-PEM-Bündel). Pflicht im Parametersatz `ByUri`. |
+| `-Uri` | string[] | — | HTTPS-URL(s) von Zertifikatsdateien (PEM, DER, Base64-DER oder ein Mehrzertifikat-PEM-Bündel). Pflicht im Parametersatz `ByUri`. |
 | `-Path` | string[] | — | Lokale Zertifikatsdatei(en) oder Verzeichnisse mit `.cer/.crt/.pem/.der/.cert`-Dateien. Pflicht im Parametersatz `ByPath`. |
-| `-Thumbprint` | string[] | — | Erwartete SHA-256-Fingerabdrücke, 64 Hex-Zeichen; Leerzeichen, Doppelpunkte und Bindestriche werden ignoriert. Jedes importierte Zertifikat muss mit einem der Werte übereinstimmen. |
+| `-Thumbprint` | string[] | — | Erwartete SHA-256-Fingerabdrücke, 64 Hex-Zeichen; Leerzeichen, Doppelpunkte und Bindestriche werden ignoriert. Jedes importierte Zertifikat muss einem der Werte entsprechen. |
 | `-StoreLocation` | string | `LocalMachine` | `LocalMachine` (erhöhte Rechte erforderlich) oder `CurrentUser`. |
-| `-StoreName` | string | auto | `Root`, `CA`, `AuthRoot` oder `TrustedPeople`. Ohne Angabe geht ein selbstsigniertes CA in `Root` und ein nicht selbstsigniertes in `CA`. |
-| `-NoRootImport` | switch | aus | Root-CA-Zertifikate statt Import überspringen. |
-| `-AllowUnverifiedRoot` | switch | aus | Root-CA-Import ohne `-Thumbprint` erlauben. Ausdrückliche Vertrauensentscheidung; es wird gewarnt und der Lauf als ungeprüft gemeldet. |
-| `-RequireConfirmation` | switch | aus | Zusätzlich zu `ShouldProcess` für jedes Zertifikat eine interaktive Ja/Nein-Bestätigung anfordern. In nicht-interaktiven Sitzungen nicht verwendbar. |
+| `-StoreName` | string | auto | `Root`, `CA`, `AuthRoot` oder `TrustedPeople`. Ohne Angabe geht eine selbstsignierte CA nach `Root` und eine nicht selbstsignierte CA nach `CA`. |
+| `-NoRootImport` | switch | aus | Root-CA-Zertifikate überspringen statt importieren. |
+| `-AllowUnverifiedRoot` | switch | aus | Einen Root-CA-Import ohne `-Thumbprint` erlauben. Ausdrückliche Vertrauensentscheidung; eine Warnung wird protokolliert und der Lauf als unverifiziert gemeldet. |
+| `-RequireConfirmation` | switch | aus | Für jedes Zertifikat zusätzlich zu `ShouldProcess` eine interaktive Ja/Nein-Bestätigung anfordern. In nicht interaktiven Sitzungen nicht nutzbar. |
 | `-Force` | switch | aus | Ein vorhandenes Zertifikat mit demselben SHA-256-Fingerabdruck ersetzen. |
-| `-PassThru` | switch | aus | Je Zertifikat ein Ergebnisobjekt zurückgeben. |
-| `-Json` | switch | aus | Einen JSON-Umschlag (`Version`, `Timestamp`, `Summary`, `Results`) zurückgeben. |
+| `-PassThru` | switch | aus | Ein Ergebnisobjekt pro Zertifikat zurückgeben. |
+| `-Json` | switch | aus | Einen einzelnen JSON-Umschlag zurückgeben (`Version`, `Timestamp`, `Summary`, `Results`). |
 | `-LogLevel` | string | `Info` | `None`, `Error`, `Warning`, `Info` oder `Verbose`. |
-| `-LogFile` | string | — | Protokollzeilen (UTF-8 ohne BOM) an diese Datei anhängen. |
+| `-LogFile` | string | — | Protokollzeilen (UTF-8, ohne BOM) an diese Datei anhängen. |
 | `-KeepTempFiles` | switch | aus | Heruntergeladene Dateien im temporären Verzeichnis behalten. |
 | `-TempPath` | string | `$env:TEMP` | Übergeordnetes Verzeichnis für ein eindeutiges temporäres Download-Verzeichnis, das danach entfernt wird. Vorhandene Dateien werden nie gelöscht. |
-| `-SkipChainValidation` | switch | aus | Die Signaturkettenprüfung zwischen übergebenen Roots und Intermediates überspringen. |
-| `-WhatIf` / `-Confirm` | allgemein | — | Standardverhalten von `ShouldProcess`. |
+| `-SkipChainValidation` | switch | aus | Die Signaturkettenprüfung zwischen den übergebenen Roots und Intermediates überspringen. |
+| `-WhatIf` / `-Confirm` | common | — | Standardverhalten von `ShouldProcess`. |
 
 ### CLI-Wrapper `Import-CaCertificates.ps1`
 
@@ -319,17 +310,16 @@ auf `-Uri` abgebildet werden:
 
 | Parameter | Status | Beschreibung |
 |---|---|---|
-| `-RootUrl` | veraltet | HTTPS-URL eines Root-CA. Verwenden Sie `-Uri`. |
-| `-IntermediateUrl` | veraltet | HTTPS-URL eines Intermediate-CA. Verwenden Sie `-Uri`. |
-| `-KeepFiles` | Alias | Alias von `-KeepTempFiles` (dieser Name wurde im README 1.x verwendet). |
+| `-RootUrl` | veraltet | HTTPS-URL eines Root-CA-Zertifikats. Verwenden Sie `-Uri`. |
+| `-IntermediateUrl` | veraltet | HTTPS-URL eines Intermediate-CA-Zertifikats. Verwenden Sie `-Uri`. |
+| `-KeepFiles` | Alias | Alias von `-KeepTempFiles` (die 1.x-README verwendete diesen Namen). |
 
-Der Wrapper muss aus einem entpackten Release (oder dem Repository-Stamm) gestartet werden;
-er lädt `src/Import-CaCertificates/Import-CaCertificates.psd1` relativ zu seinem eigenen
-Speicherort.
+Der Wrapper muss aus einem entpackten Release-Verzeichnis (oder dem Repository-Stamm) gestartet werden;
+er lädt `src/Import-CaCertificates/Import-CaCertificates.psd1` relativ zu seinem eigenen Speicherort.
 
 ## 10. Importergebnisse und Exit-Codes
 
-Jedes Zertifikat erhält einen der folgenden Status:
+Jedes Zertifikat erzeugt einen der folgenden Status:
 
 | Status | Bedeutung |
 |---|---|
@@ -338,43 +328,43 @@ Jedes Zertifikat erhält einen der folgenden Status:
 | `AlreadyPresent` | Dasselbe Zertifikat ist bereits im Speicher; es wurde nichts geschrieben. |
 | `Skipped` | Das Zertifikat wurde durch die Richtlinie ausgeschlossen (`-NoRootImport`). |
 | `WhatIf` | Probelauf: Das Zertifikat hat alle Prüfungen bestanden, wurde aber nicht geschrieben. |
-| `Declined` | Die interaktive Bestätigung wurde mit „Nein“ beantwortet. |
+| `Declined` | Die interaktive Bestätigung wurde mit „nein“ beantwortet. |
 
 CLI-Exit-Codes:
 
 | Code | Bedeutung |
 |---|---|
-| `0` | Der Lauf ist beendet (auch Probeläufe, übersprungene Duplikate und abgelehnte Bestätigungen). Prüfen Sie den Speicher, bevor Sie dies als „importiert“ werten. |
-| `1` | Betriebsfehler: Download, Dateisystem, Speicherzugriff, Modul nicht gefunden. |
-| `2` | Sicherheits- oder Validierungsverweigerung: reines HTTP, fehlender/nicht passender Fingerabdruck, kein CA, abgelaufen, privater Schlüssel, PFX, Kettenfehler, keine erhöhten Rechte für `LocalMachine`. |
+| `0` | Der Lauf ist beendet (einschließlich Probeläufen, übersprungener Duplikate und abgelehnter Bestätigungen). Überprüfen Sie den Speicher, bevor Sie dies als „importiert“ werten. |
+| `1` | Betrieblicher Fehler: Download, Dateisystem, Speicherzugriff, Modul nicht gefunden. |
+| `2` | Sicherheits- oder Validierungsverweigerung: reines HTTP, fehlender oder fehlgeschlagener Fingerabdruck, keine CA, abgelaufen, privater Schlüssel, PFX, Kettenfehler, keine erhöhten Rechte für `LocalMachine`. |
 
 ## 11. Migration von 1.x
 
 | 1.x | 2.0.0 |
 |---|---|
 | `-RootUrl` und `-IntermediateUrl` | `-Uri` (eine Liste); die veralteten Namen funktionieren im CLI-Wrapper weiterhin und protokollieren eine Warnung. |
-| Keine Fingerabdruckprüfung | `-Thumbprint` ist für jedes Zertifikat Pflicht; Root-CA-Importe werden ohne ihn abgelehnt, sofern `-AllowUnverifiedRoot` verwendet wird. |
+| Keine Fingerabdruckprüfung | `-Thumbprint` ist für jedes Zertifikat Pflicht; Root-CA-Importe werden ohne ihn verweigert, sofern nicht `-AllowUnverifiedRoot` verwendet wird. |
 | `-KeepFiles` (dokumentiert) / `-KeepTempFiles` (implementiert) | `-KeepTempFiles`; `-KeepFiles` ist ein Alias. |
-| `-TempPath` wurde nach dem Lauf entfernt | Unter `-TempPath` wird ein eindeutiges Unterverzeichnis erstellt und entfernt; vorhandene Dateien bleiben unberührt. |
-| Ein Zertifikat pro URL | Mehrfachzertifikat-PEM-Bündel, Verzeichnisse und `-Path` werden unterstützt. |
-| Root/Intermediate per Parameter gewählt | Auswahl nach Zertifikatstyp oder erzwungen über `-StoreName`. |
-| Aussage zu Windows 7 / Server 2012 R2 | Windows 10 1607+/11, Windows Server 2012 R2+ mit PowerShell 7.4+. Windows 7 wird nicht unterstützt. |
+| `-TempPath` wurde nach dem Lauf entfernt | Unter `-TempPath` wird ein eindeutiges Unterverzeichnis erstellt und entfernt; vorhandene Dateien werden nicht angetastet. |
+| Ein Zertifikat pro URL | Mehrzertifikat-PEM-Bündel, Verzeichnisse und `-Path` werden unterstützt. |
+| Root/Intermediate per Parameter gewählt | Wird nach Zertifikatstyp gewählt oder mit `-StoreName` erzwungen. |
+| Behauptung Windows 7 / Server 2012 R2 | Windows 10 1607+/11, Windows Server 2012 R2+ mit PowerShell 7.4+. Windows 7 wird nicht unterstützt. |
 | Nur Konsolenprotokoll | `-PassThru`, `-Json`, `-LogFile`, `-LogLevel` und Exit-Codes. |
 
 ## 12. Fehlerbehebung
 
 | Symptom | Ursache | Maßnahme |
 |---|---|---|
-| `Root CA import ... requires an expected SHA-256 fingerprint` | Root-CA ohne `-Thumbprint` importiert | Holen Sie den Fingerabdruck von der veröffentlichten CA-Seite und übergeben Sie ihn. |
-| `Invalid -Thumbprint value ... SHA-1 thumbprint` | Der Wert ist ein 40-stelliger SHA-1-Fingerabdruck | Berechnen Sie den SHA-256-Fingerabdruck (64 Hex-Zeichen). |
-| `does not match any expected -Thumbprint value` | Falsches Zertifikat oder falscher Fingerabdruck | Vergleichen Sie Subject, Issuer und den ausgegebenen SHA-256 mit der Quelle. |
+| `Root CA import ... requires an expected SHA-256 fingerprint` | Root-CA ohne `-Thumbprint` importiert | Holen Sie den Fingerabdruck von der veröffentlichten Seite der CA und übergeben Sie ihn. |
+| `Invalid -Thumbprint value ... SHA-1 thumbprint` | Der Wert ist ein 40-Hex-SHA-1-Thumbprint | Berechnen Sie den SHA-256-Fingerabdruck (64 Hex-Zeichen). |
+| `does not match any expected -Thumbprint value` | Falsches Zertifikat oder falscher Fingerabdruck | Vergleichen Sie Subject, Issuer und die ausgegebene SHA-256 mit der Quelle. |
 | `Only https:// URLs are allowed` | `http://`-URL | Verwenden Sie die HTTPS-URL der CA; umgehen Sie die Prüfung nicht. |
 | `contains a private key` / `PFX/P12` | Die Datei enthält privates Schlüsselmaterial | Exportieren Sie das öffentliche Zertifikat (`Export-Certificate -Type CERT`) und importieren Sie dieses. |
-| `failed validation: the certificate is expired` | Zertifikat abgelaufen | Besorgen Sie das aktuelle Zertifikat bei der CA. |
+| `failed validation: the certificate is expired` | Abgelaufenes Zertifikat | Besorgen Sie das aktuelle Zertifikat bei der CA. |
 | `does not chain to the supplied root certificate(s)` | Root und Intermediate gehören nicht zusammen | Laden Sie das passende Paar herunter oder importieren Sie nur das benötigte Zertifikat. |
-| `LocalMachine certificate stores require an elevated session` | Lauf ohne Administratorrechte | Starten Sie `pwsh` mit erhöhten Rechten oder verwenden Sie `-StoreLocation CurrentUser`. |
-| Fehler `NonInteractive mode` | Standard-Bestätigungsabfrage in der Automatisierung | Übergeben Sie `-Confirm:$false` (und `-WhatIf` für Probeläufe). |
-| `Unknown CA` bleibt nach dem Import | Der Dienst hat seine Kette zwischengespeichert | Starten Sie den Dienst neu. |
+| `LocalMachine certificate stores require an elevated session` | Läuft nicht als Administrator | Starten Sie eine erhöhte `pwsh` oder verwenden Sie `-StoreLocation CurrentUser`. |
+| `NonInteractive mode` error | Standard-Bestätigungsabfrage in der Automatisierung | Übergeben Sie `-Confirm:$false` (und `-WhatIf` für Probeläufe). |
+| `Unknown CA` remains after import | Der abhängige Dienst hat seine Kette zwischengespeichert | Starten Sie den Dienst neu. |
 
 ## 13. Entwicklung
 
@@ -391,21 +381,21 @@ Invoke-ScriptAnalyzer -Path . -Recurse -Settings .\PSScriptAnalyzerSettings.psd1
 .\tools\New-Release.ps1 -Version v2.0.0 -OutputDirectory .\out
 ```
 
-Integrationstests sind eingeschränkt: Netzwerktests laufen, wenn `$env:CI` gesetzt ist, und
-LocalMachine-Tests nur auf einem erhöhten CI-Runner. Siehe
+Integrationstests sind gegated: Netzwerktests laufen, wenn `$env:CI` gesetzt ist, und LocalMachine-Tests
+laufen nur auf einem CI-Runner mit erhöhten Rechten. Siehe
 [tests/Import-CaCertificates.Integration.Tests.ps1](tests/Import-CaCertificates.Integration.Tests.ps1).
 
-CI führt PSScriptAnalyzer und Pester bei jedem Push und Pull Request aus; ein Push eines
-`v*`-Tags baut das Archiv, prüft dessen SHA-256 und veröffentlicht das GitHub-Release.
+CI führt PSScriptAnalyzer und Pester bei jedem Push und Pull Request aus; das Pushen eines `v*`-Tags
+baut das Archiv, verifiziert dessen SHA-256 und veröffentlicht das GitHub-Release.
 
 ## 14. Lizenz und Support
 
 ### Lizenz
 
 Dieses Projekt steht unter der **PolyForm Noncommercial License 1.0.0** — siehe
-[LICENSE](LICENSE). Kommerzielle Nutzung erfordert eine separate Lizenz; wenden Sie sich an
-den Autor. Wenn Sie eine kommerzielle oder permissive Lizenz benötigen, öffnen Sie ein
-Issue, um die Lizenzierung vor der Einführung zu klären.
+[LICENSE](LICENSE). Die kommerzielle Nutzung erfordert eine separate Lizenz; wenden Sie sich an den Autor.
+Wenn Ihr Anwendungsfall kommerziell ist oder Sie eine permissive Lizenz benötigen, eröffnen Sie ein Issue,
+um die Lizenzierung zu besprechen, bevor Sie das Werkzeug einsetzen.
 
 ### Autor
 
@@ -414,10 +404,9 @@ m@deynekin.com
 
 ### Sicherheitsmeldungen
 
-Bitte öffnen Sie für Sicherheitsprobleme keine öffentlichen Issues. Siehe
-[SECURITY.md](SECURITY.md).
+Bitte eröffnen Sie für Sicherheitsprobleme keine öffentlichen Issues. Siehe [SECURITY.md](SECURITY.md).
 
 ### Projekt unterstützen
 
-Wenn dieses Werkzeug ein Zertifikatsproblem für Sie gelöst hat, nennen Sie es in Ihrem
-Runbook mit Version und Link. Erstellen Sie keine Sterne, Forks oder Kommentare automatisch.
+Wenn dieses Werkzeug ein Zertifikatsproblem für Sie gelöst hat, zitieren Sie es mit der
+Version und dem Link in Ihrem Runbook. Erstellen Sie nicht automatisch Sterne, Forks oder Kommentare.

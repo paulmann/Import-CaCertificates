@@ -339,7 +339,7 @@ CLI 退出代码：
 |---|---|---|
 | `Root CA import ... requires an expected SHA-256 fingerprint` | 导入根 CA 时没有 `-Thumbprint` | 从 CA 发布的页面获取指纹并传入。 |
 | `Invalid -Thumbprint value ... SHA-1 thumbprint` | 该值是 40 位 SHA-1 指纹 | 计算 SHA-256 指纹（64 个十六进制字符）。 |
-| `does not match any expected -Thumbprint value` | 证书或指纹不正确 | 将 subject、issuer 和打印出的 SHA-256 与来源进行比较。 |
+| `does not match any expected -Thumbprint value` | 证书或指纹不正确 | 将主题、颁发者和打印出的 SHA-256 与来源进行比较。 |
 | `Only https:// URLs are allowed` | 使用了 `http://` 地址 | 使用 CA 的 HTTPS 地址；不要绕过该检查。 |
 | `contains a private key` / `PFX/P12` | 文件包含私钥材料 | 导出公共证书（`Export-Certificate -Type CERT`）后再导入。 |
 | `failed validation: the certificate is expired` | 证书已过期 | 从 CA 获取当前证书。 |
