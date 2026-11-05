@@ -93,7 +93,7 @@
 
 .NOTES
     Project: https://github.com/paulmann/Import-CaCertificates
-    License: PolyForm Noncommercial License 1.0.0 (see LICENSE).
+    License: MIT (see LICENSE).
 #>
 #Requires -Version 7.4
 [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High', DefaultParameterSetName = 'ByUri')]

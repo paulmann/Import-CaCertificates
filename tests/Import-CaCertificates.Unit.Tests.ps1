@@ -63,8 +63,8 @@ Describe 'Module surface' {
         $exported[0] | Should -Be 'Import-CaCertificate'
     }
 
-    It 'reports version 2.0.0' {
-        $script:module.Version.ToString() | Should -Be '2.0.0'
+    It 'reports version 2.0.1' {
+        $script:module.Version.ToString() | Should -Be '2.0.1'
     }
 
     It 'exposes the documented parameters' {
@@ -292,7 +292,7 @@ Describe 'Machine-readable output and logging' {
     It 'writes a JSON envelope' {
         $json = Import-CaCertificate -Path $script:rootDer -Thumbprint $script:rootSha256 -StoreLocation CurrentUser -WhatIf -Confirm:$false -Json
         $envelope = $json | ConvertFrom-Json
-        $envelope.Version | Should -Be '2.0.0'
+        $envelope.Version | Should -Be '2.0.1'
         $envelope.Summary.Total | Should -Be 1
         $envelope.Results[0].Status | Should -Be 'WhatIf'
     }
@@ -301,7 +301,7 @@ Describe 'Machine-readable output and logging' {
         $logPath = Join-Path $script:testRoot 'import.log'
         $null = Import-CaCertificate -Path $script:rootPem -Thumbprint $script:rootSha256 -StoreLocation CurrentUser -WhatIf -Confirm:$false -LogFile $logPath
         Test-Path -LiteralPath $logPath | Should -BeTrue
-        (Get-Content -LiteralPath $logPath -Raw) | Should -Match 'Import-CaCertificate 2\.0\.0 started'
+        (Get-Content -LiteralPath $logPath -Raw) | Should -Match 'Import-CaCertificate 2\.0\.1 started'
     }
 }
 
@@ -309,7 +309,7 @@ Describe 'CLI wrapper' {
     It 'returns exit code 0 for a dry run' {
         $output = & pwsh -NoProfile -File $script:WrapperPath -Path $script:rootPem -Thumbprint $script:rootSha256 -StoreLocation CurrentUser -WhatIf -Confirm:$false 2>&1
         $LASTEXITCODE | Should -Be 0
-        ($output | Out-String) | Should -Match 'Import-CaCertificate 2\.0\.0'
+        ($output | Out-String) | Should -Match 'Import-CaCertificate 2\.0\.1'
     }
 
     It 'returns exit code 2 when a Root CA has no pinned fingerprint' {

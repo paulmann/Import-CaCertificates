@@ -6,6 +6,14 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-11-06
+
+### Changed
+
+- Relicensed the project under the **MIT License** (see `LICENSE`). Release 2.0.0 and
+  earlier were published under the PolyForm Noncommercial License 1.0.0. No code,
+  behavior or API changes.
+
 ## [2.0.0] - 2026-11-05
 
 ### Added
@@ -77,5 +85,6 @@ All notable changes to this project are documented here. The format follows
 - `-Force`, `-KeepTempFiles`, `-WhatIf`/`-Confirm`, PEM/DER parsing, duplicate check by
   SHA-1 thumbprint, cleanup of the temporary directory.
 
+[2.0.1]: https://github.com/paulmann/Import-CaCertificates/releases/tag/v2.0.1
 [2.0.0]: https://github.com/paulmann/Import-CaCertificates/releases/tag/v2.0.0
 [1.0.0]: https://github.com/paulmann/Import-CaCertificates/commits/main

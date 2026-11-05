@@ -8,13 +8,13 @@
     documentation and the license, then writes SHA256SUMS.txt next to it. Used by
     the release workflow and runnable locally:
 
-        pwsh -NoProfile -File ./tools/New-Release.ps1 -Version v2.0.0
+        pwsh -NoProfile -File ./tools/New-Release.ps1 -Version v2.0.1
 
     The manifest version must match the requested version; this prevents tagging a
     release that does not contain the code it claims to.
 
 .PARAMETER Version
-    Release version, with or without a leading "v" (for example 2.0.0 or v2.0.0).
+    Release version, with or without a leading "v" (for example 2.0.1 or v2.0.1).
 
 .PARAMETER OutputDirectory
     Directory for the archive and checksum file. Created if missing.
@@ -38,7 +38,7 @@ $repositoryRoot = Split-Path -Path $PSScriptRoot -Parent
 $versionNumber = $Version.TrimStart([char[]]@('v', 'V'))
 
 if ($versionNumber -notmatch '^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$') {
-    throw "Invalid version '$Version': expected a semantic version such as 2.0.0."
+    throw "Invalid version '$Version': expected a semantic version such as 2.0.1."
 }
 
 $manifestPath = Join-Path -Path $repositoryRoot -ChildPath 'src/Import-CaCertificates/Import-CaCertificates.psd1'

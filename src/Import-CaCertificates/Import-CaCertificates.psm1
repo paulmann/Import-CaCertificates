@@ -20,13 +20,13 @@
     structured result objects and -Json for a machine-readable envelope.
 
 .NOTES
-    License: PolyForm Noncommercial License 1.0.0 (see LICENSE).
+    License: MIT (see LICENSE).
     Project: https://github.com/paulmann/Import-CaCertificates
 #>
 
 Set-StrictMode -Version Latest
 
-$script:ModuleVersion = '2.0.0'
+$script:ModuleVersion = '2.0.1'
 $script:CaLogFile = $null
 $script:CaLogLevel = 'Info'
 $script:CaVerbose = $false

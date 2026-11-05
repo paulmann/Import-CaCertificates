@@ -1,9 +1,9 @@
 # Import-CaCertificates
 
-[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/paulmann/Import-CaCertificates/releases/latest)
+[![Version](https://img.shields.io/badge/version-2.0.1-blue.svg)](https://github.com/paulmann/Import-CaCertificates/releases/latest)
 [![PowerShell](https://img.shields.io/badge/powershell-7.4%2B-blue.svg)](https://learn.microsoft.com/powershell/)
 [![Platform](https://img.shields.io/badge/platform-Windows-blue.svg)](https://www.microsoft.com/windows/)
-[![License](https://img.shields.io/badge/license-PolyForm%20Noncommercial-lightgrey.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 <!-- md-i18n:switcher -->
 **Read this in:** [English](README.md) · [Deutsch](README.de.md) · [中文](README.zh.md) · [हिन्दी](README.hi.md) · [Español](README.es.md) · **Русский**
@@ -132,8 +132,8 @@ Windows 10/11 с PowerShell 7.6. Ожидается, что другие ком�
 
 ```powershell
 $expected = (Select-String -Path .\SHA256SUMS.txt -Pattern '\.zip$').Line.Split(' ')[0]
-(Get-FileHash -Algorithm SHA256 -LiteralPath .\Import-CaCertificates-2.0.0.zip).Hash -eq $expected
-Expand-Archive -LiteralPath .\Import-CaCertificates-2.0.0.zip -DestinationPath C:\Tools\Import-CaCertificates
+(Get-FileHash -Algorithm SHA256 -LiteralPath .\Import-CaCertificates-2.0.1.zip).Hash -eq $expected
+Expand-Archive -LiteralPath .\Import-CaCertificates-2.0.1.zip -DestinationPath C:\Tools\Import-CaCertificates
 ```
 
 Архив содержит модуль (`src/Import-CaCertificates`), обёртку CLI, документацию и лицензию.
@@ -383,7 +383,7 @@ Install-Module PSScriptAnalyzer -Force -Scope CurrentUser
 Invoke-ScriptAnalyzer -Path . -Recurse -Settings .\PSScriptAnalyzerSettings.psd1
 
 # Build a release archive and checksums
-.\tools\New-Release.ps1 -Version v2.0.0 -OutputDirectory .\out
+.\tools\New-Release.ps1 -Version v2.0.1 -OutputDirectory .\out
 ```
 
 Интеграционные тесты включаются по условию: сетевые тесты выполняются, когда задан
@@ -397,10 +397,9 @@ CI запускает PSScriptAnalyzer и Pester на каждый push и pull 
 
 ### Лицензия
 
-Проект лицензирован по **PolyForm Noncommercial License 1.0.0** — см.
-[LICENSE](LICENSE). Коммерческое использование требует отдельной лицензии; обратитесь к
-автору. Если ваш сценарий коммерческий или вам нужна разрешительная лицензия, откройте
-issue для обсуждения лицензирования до внедрения инструмента.
+Проект распространяется по **лицензии MIT** — см. [LICENSE](LICENSE). Вы можете использовать, изменять, распространять и продавать копии при сохранении уведомления об авторских правах и разрешающего уведомления.
+
+Версии до 2.0.0 включительно публиковались под PolyForm Noncommercial License 1.0.0; начиная с 2.0.1 действует лицензия MIT.
 
 ### Автор
 

@@ -1,9 +1,9 @@
 # Import-CaCertificates
 
-[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/paulmann/Import-CaCertificates/releases/latest)
+[![Version](https://img.shields.io/badge/version-2.0.1-blue.svg)](https://github.com/paulmann/Import-CaCertificates/releases/latest)
 [![PowerShell](https://img.shields.io/badge/powershell-7.4%2B-blue.svg)](https://learn.microsoft.com/powershell/)
 [![Platform](https://img.shields.io/badge/platform-Windows-blue.svg)](https://www.microsoft.com/windows/)
-[![License](https://img.shields.io/badge/license-PolyForm%20Noncommercial-lightgrey.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 <!-- md-i18n:switcher -->
 **Read this in:** [English](README.md) · [Deutsch](README.de.md) · **中文** · [हिन्दी](README.hi.md) · [Español](README.es.md) · [Русский](README.ru.md)
@@ -116,8 +116,8 @@ Windows 10/11 + PowerShell 7.6 上验证。其他组合应当可用，但不在 
 
 ```powershell
 $expected = (Select-String -Path .\SHA256SUMS.txt -Pattern '\.zip$').Line.Split(' ')[0]
-(Get-FileHash -Algorithm SHA256 -LiteralPath .\Import-CaCertificates-2.0.0.zip).Hash -eq $expected
-Expand-Archive -LiteralPath .\Import-CaCertificates-2.0.0.zip -DestinationPath C:\Tools\Import-CaCertificates
+(Get-FileHash -Algorithm SHA256 -LiteralPath .\Import-CaCertificates-2.0.1.zip).Hash -eq $expected
+Expand-Archive -LiteralPath .\Import-CaCertificates-2.0.1.zip -DestinationPath C:\Tools\Import-CaCertificates
 ```
 
 压缩包包含模块（`src/Import-CaCertificates`）、CLI 包装脚本、文档和许可证。包装脚本
@@ -360,7 +360,7 @@ Install-Module PSScriptAnalyzer -Force -Scope CurrentUser
 Invoke-ScriptAnalyzer -Path . -Recurse -Settings .\PSScriptAnalyzerSettings.psd1
 
 # Build a release archive and checksums
-.\tools\New-Release.ps1 -Version v2.0.0 -OutputDirectory .\out
+.\tools\New-Release.ps1 -Version v2.0.1 -OutputDirectory .\out
 ```
 
 集成测试带有条件：网络测试在设置 `$env:CI` 时运行，`LocalMachine` 测试只在提权的 CI
@@ -374,9 +374,9 @@ CI 在每次 push 和 pull request 时运行 PSScriptAnalyzer 和 Pester；推�
 
 ### 许可证
 
-本项目采用 **PolyForm Noncommercial License 1.0.0** 授权——见 [LICENSE](LICENSE)。
-商业使用需要单独的许可证；请联系作者。如果你的使用场景是商业用途或需要宽松许可证，
-请在采用该工具之前提交 issue 讨论授权。
+本项目采用 **MIT 许可证** 授权——见 [LICENSE](LICENSE)。在保留版权声明和许可声明的前提下，你可以使用、修改、分发和销售本软件的副本。
+
+2.0.0 及更早版本以 PolyForm Noncommercial License 1.0.0 发布；从 2.0.1 起采用 MIT 许可证。
 
 ### 作者
 

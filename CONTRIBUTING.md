@@ -80,7 +80,7 @@ feat(module): add multi-certificate PEM parsing
 fix(wrapper): map -KeepFiles alias to -KeepTempFiles
 docs(readme): document the SHA-256 requirement
 test(unit): cover chain mismatch refusal
-chore(release): prepare 2.0.0 archive
+chore(release): prepare 2.0.1 archive
 ```
 
 ## Security review
@@ -99,14 +99,14 @@ confirmation logic need an explicit section in the pull request:
    version badge.
 2. Run the full test suite and the linter on Windows.
 3. Commit and push `main`.
-4. Tag the release: `git tag -a v2.0.0 -m "Import-CaCertificates 2.0.0"` and push the tag.
-5. The release workflow builds `Import-CaCertificates-2.0.0.zip`, verifies the archive
+4. Tag the release: `git tag -a v2.0.1 -m "Import-CaCertificates 2.0.1"` and push the tag.
+5. The release workflow builds `Import-CaCertificates-2.0.1.zip`, verifies the archive
    checksum and publishes the GitHub release with `SHA256SUMS.txt`.
 6. Verify the published assets: download the archive, check the checksum, extract it and
    run a `-WhatIf` import.
 
 ## License
 
-By contributing you agree that your contribution is licensed under the
-PolyForm Noncommercial License 1.0.0 (see `LICENSE`). If you need a different license
-for your contribution, discuss it in the issue first.
+By contributing you agree that your contribution is licensed under the **MIT License**
+(see `LICENSE`). This project is distributed under MIT; contributions are accepted under
+the same terms.

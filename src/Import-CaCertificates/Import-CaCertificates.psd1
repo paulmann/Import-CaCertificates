@@ -1,6 +1,6 @@
 @{
     RootModule           = 'Import-CaCertificates.psm1'
-    ModuleVersion        = '2.0.0'
+    ModuleVersion        = '2.0.1'
     GUID                 = 'b6f2c1d9-3f5e-4c8a-9a1e-7d1c2b3a4f60'
     Author               = 'Mikhail Deynekin'
     CompanyName          = 'Mikhail Deynekin'
@@ -17,7 +17,7 @@
             Tags         = @('Windows', 'Certificate', 'CA', 'PKI', 'RootCA', 'IntermediateCA', 'Security', 'Trust')
             LicenseUri   = 'https://github.com/paulmann/Import-CaCertificates/blob/main/LICENSE'
             ProjectUri   = 'https://github.com/paulmann/Import-CaCertificates'
-            ReleaseNotes = '2.0.0: module with Import-CaCertificate, mandatory SHA-256 fingerprint verification for Root CA imports, multi-certificate PEM, chain validation, -Json/-PassThru reports, Pester tests and PSScriptAnalyzer gate.'
+            ReleaseNotes = '2.0.1: relicensed under the MIT License. 2.0.0 introduced the module with Import-CaCertificate, mandatory SHA-256 fingerprint verification for Root CA imports, multi-certificate PEM, chain validation, -Json/-PassThru reports, Pester tests and the PSScriptAnalyzer gate.'
         }
     }
 }

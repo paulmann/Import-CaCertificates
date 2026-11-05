@@ -1,9 +1,9 @@
 # Import-CaCertificates
 
-[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/paulmann/Import-CaCertificates/releases/latest)
+[![Version](https://img.shields.io/badge/version-2.0.1-blue.svg)](https://github.com/paulmann/Import-CaCertificates/releases/latest)
 [![PowerShell](https://img.shields.io/badge/powershell-7.4%2B-blue.svg)](https://learn.microsoft.com/powershell/)
 [![Platform](https://img.shields.io/badge/platform-Windows-blue.svg)](https://www.microsoft.com/windows/)
-[![License](https://img.shields.io/badge/license-PolyForm%20Noncommercial-lightgrey.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 <!-- md-i18n:switcher -->
 **Read this in:** [English](README.md) · [Deutsch](README.de.md) · [中文](README.zh.md) · **हिन्दी** · [Español](README.es.md) · [Русский](README.ru.md)
@@ -128,8 +128,8 @@ Windows 10/11 पर PowerShell 7.6 के साथ परीक्षण क�
 
 ```powershell
 $expected = (Select-String -Path .\SHA256SUMS.txt -Pattern '\.zip$').Line.Split(' ')[0]
-(Get-FileHash -Algorithm SHA256 -LiteralPath .\Import-CaCertificates-2.0.0.zip).Hash -eq $expected
-Expand-Archive -LiteralPath .\Import-CaCertificates-2.0.0.zip -DestinationPath C:\Tools\Import-CaCertificates
+(Get-FileHash -Algorithm SHA256 -LiteralPath .\Import-CaCertificates-2.0.1.zip).Hash -eq $expected
+Expand-Archive -LiteralPath .\Import-CaCertificates-2.0.1.zip -DestinationPath C:\Tools\Import-CaCertificates
 ```
 
 संग्रह में मॉड्यूल (`src/Import-CaCertificates`), CLI रैपर, दस्तावेज़ और लाइसेंस हैं।
@@ -379,7 +379,7 @@ Install-Module PSScriptAnalyzer -Force -Scope CurrentUser
 Invoke-ScriptAnalyzer -Path . -Recurse -Settings .\PSScriptAnalyzerSettings.psd1
 
 # Build a release archive and checksums
-.\tools\New-Release.ps1 -Version v2.0.0 -OutputDirectory .\out
+.\tools\New-Release.ps1 -Version v2.0.1 -OutputDirectory .\out
 ```
 
 इंटीग्रेशन परीक्षण सशर्त हैं: नेटवर्क परीक्षण तब चलते हैं जब `$env:CI` सेट हो, और
@@ -393,10 +393,9 @@ CI हर push और pull request पर PSScriptAnalyzer और Pester चल�
 
 ### लाइसेंस
 
-यह परियोजना **PolyForm Noncommercial License 1.0.0** के अंतर्गत लाइसेंस प्राप्त है — देखें
-[LICENSE](LICENSE)। व्यावसायिक उपयोग के लिए अलग लाइसेंस आवश्यक है; लेखक से संपर्क करें।
-यदि आपका उपयोग व्यावसायिक है या आपको अनुमतिपरक लाइसेंस चाहिए, तो उपकरण अपनाने से पहले
-लाइसेंसिंग पर चर्चा के लिए issue खोलें।
+यह परियोजना **MIT लाइसेंस** के अंतर्गत लाइसेंस प्राप्त है — देखें [LICENSE](LICENSE)। कॉपीराइट सूचना और अनुमति सूचना बनाए रखने पर आप इसका उपयोग, संशोधन, वितरण और प्रतियाँ बेच सकते हैं।
+
+2.0.0 और उससे पहले के संस्करण PolyForm Noncommercial License 1.0.0 के अंतर्गत प्रकाशित हुए थे; 2.0.1 से MIT लागू है।
 
 ### लेखक
 

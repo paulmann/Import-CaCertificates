@@ -1,9 +1,9 @@
 # Import-CaCertificates
 
-[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/paulmann/Import-CaCertificates/releases/latest)
+[![Version](https://img.shields.io/badge/version-2.0.1-blue.svg)](https://github.com/paulmann/Import-CaCertificates/releases/latest)
 [![PowerShell](https://img.shields.io/badge/powershell-7.4%2B-blue.svg)](https://learn.microsoft.com/powershell/)
 [![Platform](https://img.shields.io/badge/platform-Windows-blue.svg)](https://www.microsoft.com/windows/)
-[![License](https://img.shields.io/badge/license-PolyForm%20Noncommercial-lightgrey.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 <!-- md-i18n:switcher -->
 **Read this in:** English · [Deutsch](README.de.md) · [中文](README.zh.md) · [हिन्दी](README.hi.md) · [Español](README.es.md) · [Русский](README.ru.md)
@@ -128,8 +128,8 @@ verify the archive, and extract it to a tools directory such as `C:\Tools\Import
 
 ```powershell
 $expected = (Select-String -Path .\SHA256SUMS.txt -Pattern '\.zip$').Line.Split(' ')[0]
-(Get-FileHash -Algorithm SHA256 -LiteralPath .\Import-CaCertificates-2.0.0.zip).Hash -eq $expected
-Expand-Archive -LiteralPath .\Import-CaCertificates-2.0.0.zip -DestinationPath C:\Tools\Import-CaCertificates
+(Get-FileHash -Algorithm SHA256 -LiteralPath .\Import-CaCertificates-2.0.1.zip).Hash -eq $expected
+Expand-Archive -LiteralPath .\Import-CaCertificates-2.0.1.zip -DestinationPath C:\Tools\Import-CaCertificates
 ```
 
 The archive contains the module (`src/Import-CaCertificates`), the CLI wrapper, the
@@ -379,7 +379,7 @@ Install-Module PSScriptAnalyzer -Force -Scope CurrentUser
 Invoke-ScriptAnalyzer -Path . -Recurse -Settings .\PSScriptAnalyzerSettings.psd1
 
 # Build a release archive and checksums
-.\tools\New-Release.ps1 -Version v2.0.0 -OutputDirectory .\out
+.\tools\New-Release.ps1 -Version v2.0.1 -OutputDirectory .\out
 ```
 
 Integration tests are gated: network tests run when `$env:CI` is set, and LocalMachine
@@ -393,10 +393,12 @@ builds the archive, verifies its SHA-256 and publishes the GitHub release.
 
 ### License
 
-This project is licensed under the **PolyForm Noncommercial License 1.0.0** — see
-[LICENSE](LICENSE). Commercial use requires a separate license; contact the author.
-If your use case is commercial or you need a permissive license, open an issue to
-discuss licensing before adopting the tool.
+This project is licensed under the **MIT License** — see [LICENSE](LICENSE). You may use,
+modify, distribute and sell copies, provided the copyright notice and the permission
+notice are retained.
+
+Release 2.0.0 and earlier were published under the PolyForm Noncommercial License 1.0.0;
+release 2.0.1 and later are MIT-licensed.
 
 ### Author
 

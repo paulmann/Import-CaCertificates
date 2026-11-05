@@ -1,9 +1,9 @@
 # Import-CaCertificates
 
-[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/paulmann/Import-CaCertificates/releases/latest)
+[![Version](https://img.shields.io/badge/version-2.0.1-blue.svg)](https://github.com/paulmann/Import-CaCertificates/releases/latest)
 [![PowerShell](https://img.shields.io/badge/powershell-7.4%2B-blue.svg)](https://learn.microsoft.com/powershell/)
 [![Platform](https://img.shields.io/badge/platform-Windows-blue.svg)](https://www.microsoft.com/windows/)
-[![License](https://img.shields.io/badge/license-PolyForm%20Noncommercial-lightgrey.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 <!-- md-i18n:switcher -->
 **Read this in:** [English](README.md) · [Deutsch](README.de.md) · [中文](README.zh.md) · [हिन्दी](README.hi.md) · **Español** · [Русский](README.ru.md)
@@ -134,8 +134,8 @@ verifica el archivo y extráelo en un directorio de herramientas como
 
 ```powershell
 $expected = (Select-String -Path .\SHA256SUMS.txt -Pattern '\.zip$').Line.Split(' ')[0]
-(Get-FileHash -Algorithm SHA256 -LiteralPath .\Import-CaCertificates-2.0.0.zip).Hash -eq $expected
-Expand-Archive -LiteralPath .\Import-CaCertificates-2.0.0.zip -DestinationPath C:\Tools\Import-CaCertificates
+(Get-FileHash -Algorithm SHA256 -LiteralPath .\Import-CaCertificates-2.0.1.zip).Hash -eq $expected
+Expand-Archive -LiteralPath .\Import-CaCertificates-2.0.1.zip -DestinationPath C:\Tools\Import-CaCertificates
 ```
 
 El archivo contiene el módulo (`src/Import-CaCertificates`), el envoltorio CLI, la
@@ -385,7 +385,7 @@ Install-Module PSScriptAnalyzer -Force -Scope CurrentUser
 Invoke-ScriptAnalyzer -Path . -Recurse -Settings .\PSScriptAnalyzerSettings.psd1
 
 # Build a release archive and checksums
-.\tools\New-Release.ps1 -Version v2.0.0 -OutputDirectory .\out
+.\tools\New-Release.ps1 -Version v2.0.1 -OutputDirectory .\out
 ```
 
 Las pruebas de integración están condicionadas: las pruebas de red se ejecutan cuando
@@ -400,10 +400,9 @@ se compila el archivo, se verifica su SHA-256 y se publica la versión de GitHub
 
 ### Licencia
 
-Este proyecto tiene la licencia **PolyForm Noncommercial License 1.0.0** — consulta
-[LICENSE](LICENSE). El uso comercial requiere una licencia aparte; contacta con el autor.
-Si tu caso de uso es comercial o necesitas una licencia permisiva, abre un issue para hablar
-de licencias antes de adoptar la herramienta.
+Este proyecto está licenciado bajo la **Licencia MIT** — véase [LICENSE](LICENSE). Puede usar, modificar, distribuir y vender copias siempre que conserve el aviso de copyright y el aviso de permiso.
+
+La versión 2.0.0 y anteriores se publicaron bajo la PolyForm Noncommercial License 1.0.0; la versión 2.0.1 y posteriores son MIT.
 
 ### Autor
 

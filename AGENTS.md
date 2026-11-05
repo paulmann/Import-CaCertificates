@@ -1,12 +1,13 @@
-# AGENTS.md — Import-CaCertificates 2.0.0
+# AGENTS.md — Import-CaCertificates 2.0.1
 
 Agent-facing guide: how to install, run and report problems for Import-CaCertificates.
 Human documentation: [README.md](README.md). Security model:
 [docs/SECURITY-MODEL.md](docs/SECURITY-MODEL.md).
 
-> Verified against repository state on 2026-11-05. Version covered: 2.0.0 (VERSION,
-> module manifest, README badge). Tests: 38 Pester tests, 36 passed / 2 skipped locally
-> (skips are CI-gated network and LocalMachine tests), PSScriptAnalyzer clean.
+> Verified against repository state on 2026-11-06. Version covered: 2.0.1 (VERSION,
+> module manifest, README badge; MIT License). Tests: 38 Pester tests, 36 passed / 2
+> skipped locally (skips are CI-gated network and LocalMachine tests), PSScriptAnalyzer
+> clean.
 
 ## 1. What it is
 
@@ -41,12 +42,12 @@ User store, and do not extract certificates with another tool to avoid the HTTPS
 
 ### 3.1 From a release
 
-Download `Import-CaCertificates-2.0.0.zip` and `SHA256SUMS.txt` from
+Download `Import-CaCertificates-2.0.1.zip` and `SHA256SUMS.txt` from
 <https://github.com/paulmann/Import-CaCertificates/releases/latest>, verify the hash and
 extract the archive. The wrapper resolves the module relative to its own directory.
 
 ```powershell
-(Get-FileHash -Algorithm SHA256 -LiteralPath .\Import-CaCertificates-2.0.0.zip).Hash
+(Get-FileHash -Algorithm SHA256 -LiteralPath .\Import-CaCertificates-2.0.1.zip).Hash
 ```
 
 ### 3.2 From source
@@ -60,7 +61,7 @@ Import-Module .\Import-CaCertificates\src\Import-CaCertificates\Import-CaCertifi
 
 ```powershell
 Import-Module .\src\Import-CaCertificates\Import-CaCertificates.psd1
-(Get-Module Import-CaCertificates).Version.ToString()   # 2.0.0
+(Get-Module Import-CaCertificates).Version.ToString()   # 2.0.1
 Get-Command Import-CaCertificate | Select-Object -ExpandProperty Parameters
 ```
 
@@ -201,7 +202,7 @@ Remove-Item -Path Cert:\LocalMachine\CA\<SHA-1-thumbprint>
 - `README.md` — overview, requirements, install, quick start, parameters, migration,
   troubleshooting.
 - `src/Import-CaCertificates/Import-CaCertificates.psm1` — implementation and validation
-  order; manifest for version `2.0.0`.
+  order; manifest for version `2.0.1`.
 - `tests/` — expected behaviour, including refusals and exit codes.
 - `docs/SECURITY-MODEL.md` — threat model and limits; `SECURITY.md` — disclosure policy.
 - `CHANGELOG.md` — what changed and breaking changes.
