@@ -1,215 +1,216 @@
-# AGENTS.md — Import-CaCertificates 1.0.0
+# AGENTS.md — Import-CaCertificates 2.0.0
 
-Agent-facing guide: how to install Import-CaCertificates, run it, and report problems responsibly.
-Human documentation: [README.md](README.md).
+Agent-facing guide: how to install, run and report problems for Import-CaCertificates.
+Human documentation: [README.md](README.md). Security model:
+[docs/SECURITY-MODEL.md](docs/SECURITY-MODEL.md).
 
-> Verified against repository state on 2026-10-22. Version covered: 1.0.0 (README version badge;
-> no VERSION file, no manifest, no version string in the script). Branch `main`, commit `7c24c8e`,
-> no tags and no releases.
+> Verified against repository state on 2026-11-05. Version covered: 2.0.0 (VERSION,
+> module manifest, README badge). Tests: 38 Pester tests, 36 passed / 2 skipped locally
+> (skips are CI-gated network and LocalMachine tests), PSScriptAnalyzer clean.
 
 ## 1. What it is
 
-`Import-CaCertificates.ps1` downloads one Root CA certificate and, optionally, one Intermediate CA
-certificate from HTTPS URLs and imports them into the Windows Local Machine certificate stores
-(`LocalMachine\Root` and `LocalMachine\CA`). It serves servers behind restrictive firewalls and
-deployments that must trust a specific CA chain (for example the chain behind hMailServer, Exim or
-IIS). It is not a certificate manager: it does not request, renew, back up, list or remove
-certificates, and it never touches the Current User stores.
+`Import-CaCertificate` (module `Import-CaCertificates`) reads public CA certificates
+from HTTPS URLs or local files and imports them into Windows certificate stores. It is
+not a certificate manager: it does not request, renew, back up, list or remove
+certificates, and it never imports private keys.
 
 | | |
 |---|---|
-| Runtime / platform | Windows 7 / Windows Server 2012 R2 or later (README section 3); PowerShell 7.5 or higher, enforced by `#Requires -Version 7.5` |
-| Entry point | `Import-CaCertificates.ps1` - one script, no module, no installer, no dependencies |
-| Writes to | `Cert:\LocalMachine\Root` (Root CA) and `Cert:\LocalMachine\CA` (Intermediate CA); a temporary directory, default `$env:TEMP\CaImport_<8 hex characters>`, deleted afterwards unless `-KeepTempFiles` is used |
-| Network access | Downloads only the URLs passed in `-RootUrl` and `-IntermediateUrl`; HTTPS is enforced and any other scheme is rejected before the request is made |
-| Elevation | Required: `#Requires -RunAsAdministrator`, plus an inner administrator check that exits 1 |
+| Runtime | Windows 10 1607+/11, Windows Server 2012 R2+; PowerShell 7.4+ (`pwsh`), enforced by `#Requires -Version 7.4`; Windows PowerShell 5.1 is not supported |
+| Entry points | Module function `Import-CaCertificate` in `src/Import-CaCertificates/`; CLI wrapper `Import-CaCertificates.ps1` |
+| Writes to | One certificate per input into `Cert:\<StoreLocation>\<StoreName>`: default `LocalMachine\Root` for a self-signed CA and `LocalMachine\CA` for an intermediate; `-StoreLocation CurrentUser` needs no elevation; a unique temporary download directory, removed afterwards unless `-KeepTempFiles` |
+| Network | Only the `-Uri` values supplied; HTTPS enforced, `http://` refused before any request |
+| Elevation | Required for `LocalMachine` (`Test-IsAdministrator` check, exit code 2), not for `CurrentUser` |
 
 ## 2. Preconditions
 
 | Requirement | Why | Check |
 |---|---|---|
-| Elevated session | the script writes to `LocalMachine` stores | `([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)` returns `True` |
-| PowerShell 7.5+ | `#Requires -Version 7.5` refuses to start otherwise | `$PSVersionTable.PSVersion` |
-| Execution policy allows the script | README section 5 asks for `RemoteSigned` | `Get-ExecutionPolicy` |
-| Both URLs use `https://` | the download helper throws on any other scheme | inspect the URL; `$url -like 'https://*'` |
-| Outbound HTTPS to the CA host | the certificate is fetched at run time | `(Invoke-WebRequest -Uri '<certificate-url>' -Method Head).StatusCode` returns `200` |
-| A human-approved CA | importing a Root CA changes machine-wide trust | the expected subject and thumbprint come from the CA's own published page |
+| PowerShell 7.4+ | `#Requires -Version 7.4`; `.NET 8` APIs are used | `$PSVersionTable.PSVersion` |
+| The expected SHA-256 fingerprint | Root CA imports are refused without it unless `-AllowUnverifiedRoot`; every certificate is pinned | fingerprint from the CA's published page, 64 hex characters |
+| Elevated session for `LocalMachine` | the store is machine-wide | `([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole('Administrator')` |
+| HTTPS access to the `-Uri` host | certificates are downloaded at run time | `(Invoke-WebRequest -Uri '<url>' -Method Head).StatusCode` returns `200` |
+| Approval of the trust decision | importing a Root CA changes machine-wide trust | the fingerprint and subject were confirmed by a human from an independent source |
 
-If a check fails, stop and report. Do not lower the execution policy, do not substitute the Current
+If a check fails, stop and report. Do not lower the execution policy, do not use
+`-AllowUnverifiedRoot` to get past a missing fingerprint, do not substitute the Current
 User store, and do not extract certificates with another tool to avoid the HTTPS rule.
 
 ## 3. Install
 
 ### 3.1 From a release
 
-Source install only - this repository has no releases.
+Download `Import-CaCertificates-2.0.0.zip` and `SHA256SUMS.txt` from
+<https://github.com/paulmann/Import-CaCertificates/releases/latest>, verify the hash and
+extract the archive. The wrapper resolves the module relative to its own directory.
+
+```powershell
+(Get-FileHash -Algorithm SHA256 -LiteralPath .\Import-CaCertificates-2.0.0.zip).Hash
+```
 
 ### 3.2 From source
 
-Download the single script (command as published in README section 4), or clone the repository and
-run the script from the clone root:
-
 ```powershell
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/paulmann/Import-CaCertificates/main/Import-CaCertificates.ps1" -OutFile "Import-CaCertificates.ps1"
 git clone https://github.com/paulmann/Import-CaCertificates.git
+Import-Module .\Import-CaCertificates\src\Import-CaCertificates\Import-CaCertificates.psd1
 ```
-
-There is no installation step: no module import, no package manager, nothing to register.
 
 ### 3.3 Verify
 
 ```powershell
-pwsh -NoProfile -Command "Get-Help .\Import-CaCertificates.ps1"
+Import-Module .\src\Import-CaCertificates\Import-CaCertificates.psd1
+(Get-Module Import-CaCertificates).Version.ToString()   # 2.0.0
+Get-Command Import-CaCertificate | Select-Object -ExpandProperty Parameters
 ```
-
-Expected output is the syntax line, which is all `Get-Help` returns for this script:
-
-```
-Import-CaCertificates.ps1 [-RootUrl] <string> [[-IntermediateUrl] <string>] [[-TempPath] <string>] [-Force] [-KeepTempFiles] [-WhatIf] [-Confirm] [<CommonParameters>]
-```
-
-The comment-based help inside the file is not returned by `Get-Help` (it follows the `#Requires` and
-`using` statements), so read README section 9 or the comment header at the top of the script.
 
 ## 4. Configure
 
-There is no configuration file and no environment variable. Behaviour is set only by parameters:
+No configuration file and no environment variable; behaviour is set only by parameters.
 
-| Parameter | Type | Required | Meaning |
+| Parameter | Type | Default | Meaning |
 |---|---|---|---|
-| `-RootUrl` | string | yes | HTTPS URL of the Root CA certificate (PEM or DER) |
-| `-IntermediateUrl` | string | no | HTTPS URL of the Intermediate CA certificate (PEM or DER) |
-| `-TempPath` | string | no | directory for downloaded files; default is a unique subdirectory of the system TEMP folder |
-| `-Force` | switch | no | remove an existing certificate with the same thumbprint from that store and add the downloaded one; without it an existing certificate is skipped |
-| `-KeepTempFiles` | switch | no | keep the temporary directory and print its path instead of deleting it |
-| `-WhatIf` / `-Confirm` | common | no | standard `ShouldProcess` gate; the store write is skipped or confirmed |
+| `-Uri` | string[] | — | HTTPS URL(s); mandatory in the `ByUri` set |
+| `-Path` | string[] | — | file(s) or directory of `.cer/.crt/.pem/.der/.cert`; mandatory in the `ByPath` set |
+| `-Thumbprint` | string[] | — | expected SHA-256 fingerprint(s); every imported certificate must match one |
+| `-StoreLocation` | string | `LocalMachine` | `LocalMachine` (elevated) or `CurrentUser` |
+| `-StoreName` | string | auto | `Root`, `CA`, `AuthRoot`, `TrustedPeople`; auto routes self-signed CA to Root and other CA to CA |
+| `-NoRootImport` | switch | off | skip Root CA certificates |
+| `-AllowUnverifiedRoot` | switch | off | explicit override of the fingerprint requirement for Root CA (warned, reported) |
+| `-RequireConfirmation` | switch | off | interactive yes/no per certificate; unusable non-interactively |
+| `-Force` | switch | off | replace a certificate with the same SHA-256 fingerprint; never bypasses verification |
+| `-PassThru` | switch | off | return result objects |
+| `-Json` | switch | off | return a JSON envelope; suppresses info logging unless `-LogLevel` is given |
+| `-LogLevel` | string | `Info` | `None`, `Error`, `Warning`, `Info`, `Verbose` |
+| `-LogFile` | string | — | append log lines (UTF-8, no BOM) |
+| `-KeepTempFiles` | switch | off | keep downloaded files |
+| `-TempPath` | string | `$env:TEMP` | parent for a unique temporary directory, removed after the run |
+| `-SkipChainValidation` | switch | off | skip root/intermediate chain check |
+| `-WhatIf` / `-Confirm` | common | — | `ShouldProcess`; `ConfirmImpact = High` means automation must pass `-Confirm:$false` |
 
-README section 8 and section 9 name the retention switch `-KeepFiles`; that parameter does not
-exist. The implemented name is `-KeepTempFiles`.
+The CLI wrapper also accepts the deprecated `-RootUrl`/`-IntermediateUrl` (mapped to
+`-Uri` with a warning) and `-KeepFiles` (alias of `-KeepTempFiles`).
 
 ## 5. Use
 
-Run in order: help, dry run, one Root certificate, verify the store, the Intermediate, restart the service.
+Run in order: help, dry run, import, verify the store, restart the dependent service.
 
-**5.1 Read the documentation**: `Get-Help .\Import-CaCertificates.ps1` (syntax only) and
-`Get-Content .\Import-CaCertificates.ps1 -TotalCount 75` (the comment header with parameter help).
+**5.1 Read the documentation**
+
+```powershell
+Get-Help Import-CaCertificate -Full
+```
 
 **5.2 Dry run (no store change)**
 
 ```powershell
-.\Import-CaCertificates.ps1 -RootUrl 'https://letsencrypt.org/certs/isrgrootx1.pem' -WhatIf -Confirm:$false
+Import-CaCertificate -Uri 'https://letsencrypt.org/certs/isrgrootx1.pem' `
+    -Thumbprint '96BCEC06264976F37460779ACF28C5A7CFE8A3C0AAE11A8FFCEE05C0BDDF08C6' `
+    -WhatIf -Confirm:$false
 ```
 
-Expected: `[<timestamp>] [Info] Loaded Certificate: Subject='...', Thumbprint='...'` and
-`What if: Performing the operation "Import certificate <subject>" on target "LocalMachine\Root".`
-`-WhatIf` still downloads the certificate and still deletes the temporary directory; it only skips
-the store write.
+Expected: `[<timestamp>] [Info] Certificate: Subject='CN=ISRG Root X1, ...', ... SHA-256=96BCEC06...`,
+a `What if: Performing the operation "Import certificate ..." on target "LocalMachine\Root"`
+line, and `Finished: total=1, ... whatIf=1`. No store write.
 
-**5.3 Import a certificate (Root only, then Root plus Intermediate)**
+**5.3 Import**
 
 ```powershell
-.\Import-CaCertificates.ps1 -RootUrl "https://letsencrypt.org/certs/isrgrootx1.pem" -Confirm:$false
-.\Import-CaCertificates.ps1 -RootUrl "https://letsencrypt.org/certs/isrg-root-x2.pem" -IntermediateUrl "https://letsencrypt.org/certs/lets-encrypt-e1.pem" -Confirm:$false
+Import-CaCertificate -Uri 'https://letsencrypt.org/certs/isrgrootx1.pem' `
+    -Thumbprint '96BCEC06264976F37460779ACF28C5A7CFE8A3C0AAE11A8FFCEE05C0BDDF08C6' `
+    -Confirm:$false -PassThru
 ```
 
-Expected after the first: `Successfully imported certificate into 'LocalMachine\Root'.` then
-`Certificate import process completed successfully.` In the second, the Root goes to
-`LocalMachine\Root` and the Intermediate to `LocalMachine\CA`. Add `-Force` to replace an existing
-certificate: the script reports `Certificate exists. Force specified. Re-importing to '<store>'.` and
-re-adds the downloaded certificate. Add `-KeepTempFiles` to keep the temporary directory for
-debugging; expected: `Temporary files retained at: <path>`.
+Expected: status `Imported` (or `AlreadyPresent` on a repeat) and
+`Finished: total=1, imported=1, ...`. Intermediate certificates are routed to
+`LocalMachine\CA`; roots to `LocalMachine\Root`.
 
 **5.4 Verify the stores, then restart the service**
 
-The script reports the thumbprint it handled; the certificate provider shows the same stores:
-
 ```powershell
-Get-ChildItem -Path Cert:\LocalMachine\Root | Where-Object Thumbprint -eq '<thumbprint-from-log>'
-Get-ChildItem -Path Cert:\LocalMachine\CA | Where-Object Subject -match 'ISRG'
+Get-ChildItem Cert:\LocalMachine\Root | Where-Object Subject -match 'ISRG'
 ```
 
-README section 10: then restart the service that reported the unknown CA (for example the hMailServer
-service) so it re-reads the machine trust store.
+Then restart the service that reported the unknown CA (for example `hMailServer`,
+`W3SVC`).
 
 **Output and exit codes**
 
-Log lines look like `[yyyy-MM-dd HH:mm:ss] [Level] message`, with levels `Info`, `Warning`, `Error`
-and `Verbose`. `Info` messages go to the information stream and are displayed; `-Verbose` adds the
-download and cleanup details. Capture them with `6>&1` when parsing.
-
-| Code | Meaning |
-|---|---|
-| 0 | The run finished. This includes a dry run, a skipped duplicate, and a declined confirmation - a zero exit code does not prove that a certificate was written. Always verify the store. |
-| 1 | Explicit `exit 1` on the inner administrator check, and in the outer error handler for any download, parse or store error |
-| none | `#Requires -Version 7.5` or `#Requires -RunAsAdministrator` stops the script before its body runs when the check is not met |
+- Informational lines: `[yyyy-MM-dd HH:mm:ss] [Level] message`; levels `Error`, `Warning`,
+  `Info`, `Verbose`; warnings also go to the warning stream; `-Json` returns a single
+  JSON envelope with `Version`, `Timestamp`, `Summary`, `Results`.
+- Statuses: `Imported`, `Replaced`, `AlreadyPresent`, `Skipped`, `WhatIf`, `Declined`.
+- Exit codes: `0` finished (verify the store — dry runs and skipped duplicates also
+  return 0), `1` operational failure, `2` security/validation refusal (HTTP, missing or
+  mismatched fingerprint, not a CA, expired, private key, PFX, chain mismatch, missing
+  elevation for LocalMachine).
 
 ## 6. Safety and rollback
 
-- Changes: machine-wide trust for every account on the host (the Root store is authoritative for TLS
-  validation), one or two certificates, and a temporary directory that is normally deleted.
-- Does not change: `Cert:\CurrentUser\*`, other certificates, registry beyond the certificate stores,
-  services, config files, installed software. It contacts nothing except the URLs supplied.
-- Importing a Root CA is a trust decision for the whole machine. Obtain the subject and SHA-1
-  thumbprint from the CA's published page and have a human confirm them before the first real run.
-- Undo one imported certificate (elevated; the thumbprint is in the `Loaded Certificate` and
-  `Successfully imported` lines):
+- Changes: machine-wide trust for one store entry (Root CA) or an intermediate; a
+  temporary download directory that is normally deleted.
+- Does not change: private keys, other certificates, services, configuration files,
+  registry beyond the certificate store. It contacts nothing except the supplied URLs.
+- Importing a Root CA is a trust decision for the whole machine. Obtain the fingerprint
+  from the CA's published page, run `-WhatIf`, and have a human approve it before the
+  first real run.
+- Undo one imported certificate (elevated; the SHA-1 thumbprint is reported as
+  `ThumbprintSha1`):
 
 ```powershell
-Remove-Item -Path Cert:\LocalMachine\Root\<thumbprint>
-Remove-Item -Path Cert:\LocalMachine\CA\<thumbprint>
+Remove-Item -Path Cert:\LocalMachine\Root\<SHA-1-thumbprint>
+Remove-Item -Path Cert:\LocalMachine\CA\<SHA-1-thumbprint>
 ```
 
-  `-Force` removes a certificate with the same thumbprint before adding the downloaded one, so undo
-  removes it as well; if it existed before the run, it must be imported again.
-- If `-KeepTempFiles` was used, delete the directory named in `Temporary files retained at:`.
-- On a production host: `-WhatIf` first, then one Root certificate, then verify the store, then the
-  Intermediate, then restart the dependent service. Never import a Root CA "to see what happens".
+- If `-KeepTempFiles` was used, delete the directory named in the warning
+  `Temporary files retained at:`.
+- On a production host: `-WhatIf`, then one certificate, then verify the store, then the
+  intermediate, then restart the service. Never import a Root CA "to see what happens".
 
 ## 7. Failure modes
 
 | Symptom | Likely cause | Action |
 |---|---|---|
-| `Security Violation: Only HTTPS URLs are allowed. Provided: '<url>'` | the URL uses `http://`, as in the README section 8 example for DigiCert | use the `https://` URL published by the CA |
-| `Failed to download certificate from '<url>': <reason>` | firewall, proxy or TLS interception on the host | confirm outbound HTTPS from this host; do not bypass the HTTPS rule |
-| `Failed to parse certificate file '<path>': File content is neither valid DER nor PEM format.` | the URL returned an HTML error page or a redirect body | check the URL returns the certificate file itself |
-| `This script requires Administrative privileges. Please run as Administrator.` plus exit code 1, or a `#Requires` error before any output | the session is not elevated | start an elevated `pwsh` |
-| `Certificate already exists in '<store>' (Thumbprint: ...). Skipping.` | default duplicate handling by thumbprint | expected; add `-Force` only when replacement is intended |
-| No `Successfully imported` line, exit code 0 | the confirmation prompt was not answered (`-Confirm:$false` missing); a closed stdin makes the run fail instead | always pass `-Confirm:$false` in unattended runs and read the store afterwards |
-| `Unknown CA` still reported after a successful import | the service cached its trust chain | restart the service (README section 10) |
-| Parameter binding error for `-KeepFiles` | that switch is not implemented | use `-KeepTempFiles` |
+| `Root CA import of '<subject>' requires an expected SHA-256 fingerprint` | Root CA without `-Thumbprint` | provide the pinned SHA-256 or, only deliberately, `-AllowUnverifiedRoot` |
+| `Invalid -Thumbprint value ... SHA-1` | 40-hex SHA-1 thumbprint | compute the SHA-256 fingerprint |
+| `does not match any expected -Thumbprint value` | wrong certificate or wrong pin | re-check the source and the fingerprint |
+| `Only https:// URLs are allowed` | `http://` URL | use the HTTPS URL published by the CA |
+| `Failed to download certificate from '<url>'` | firewall/proxy/TLS interception | confirm outbound HTTPS; do not bypass |
+| `contains a private key` / `PFX/P12` | private key material in the input | export the public certificate and retry |
+| `failed validation: the certificate is expired` | stale certificate | obtain the current certificate |
+| `does not chain to the supplied root certificate(s)` | mismatched pair | download the matching pair |
+| `LocalMachine certificate stores require an elevated session` | not elevated | start an elevated `pwsh` or use `-StoreLocation CurrentUser` |
+| `NonInteractive mode` / no import | confirmation prompt in automation | pass `-Confirm:$false`; use `-WhatIf` for dry runs |
+| `Certificate already exists ... Skipping` | idempotent repeat | add `-Force` only when replacement is intended |
+| `Unknown CA` still reported | the service cached its chain | restart the service |
 
 ## 8. Limits
 
-- Windows only: the script uses `WindowsIdentity`, `WindowsPrincipal` and `X509Store` at
-  `StoreLocation::LocalMachine`; there is no path for Linux or macOS.
-- One certificate per URL. The PEM fallback strips the `BEGIN`/`END` markers and decodes the rest as
-  a single certificate, so a bundle of several certificates in one file is not supported.
-- No default or built-in certificate URLs, no proxy or TLS options, no logging to file, no uninstall.
-- The repository has no releases, tags, CI workflows, tests, CHANGELOG or `docs/` directory; the only
-  documentation is `README.md` and the comment header of the script.
-- Tested platform per the script header: Windows 10/11 and Windows Server 2019/2022 with PowerShell
-  7.5+; the README states Windows 7 / Windows Server 2012 R2 or later. No other matrix is documented.
-- README section 7.2 describes the "DST Root CA X3 cross-sign" but the commands in that section use
-  `isrg-root-x2.pem` and `lets-encrypt-e1.pem`; follow the URLs, not the prose.
+- Windows only: the module uses `WindowsIdentity`, `X509Store` and Windows stores.
+- One certificate per URL/file; a multi-certificate PEM or directory is supported.
+- No OCSP/CRL/CT checks (documented non-goal), no revocation handling.
+- No proxy/TLS options, no built-in certificate URLs, no uninstall.
+- No PSGallery package: install from the release archive or source.
+- Legacy `-RootUrl`/`-IntermediateUrl` work only through the CLI wrapper; the module
+  function accepts `-Uri`.
+- Self-signed detection compares subject and issuer names; cross-signed roots are
+  treated as intermediates.
 
 ## 9. Sources of truth
 
-- `README.md` - version badge (1.0.0), requirements (section 3), download command (section 4),
-  installation notes (section 5), import flow (section 6), Let's Encrypt commands (section 7),
-  examples (section 8), parameter table (section 9), troubleshooting (section 10), license (11).
-- `Import-CaCertificates.ps1` - comment header (lines 8-75); `#Requires` and parameters (lines 1-96);
-  log format (lines 100-123); HTTPS enforcement (lines 148-151); PEM/DER loading and the
-  `Loaded Certificate` line (lines 172-221); duplicate check, `-Force` and `ShouldProcess`
-  (lines 223-271); main flow, exit codes and cleanup (lines 277-335).
-- `LICENSE` - PolyForm Noncommercial License 1.0.0.
-- Not verifiable here: the script was parsed under PowerShell 7.6.6, but this host is not elevated,
-  so `#Requires -RunAsAdministrator` prevents an end-to-end run. The `ShouldProcess` confirmation
-  behaviour was checked with an equivalent probe script carrying the same
-  `CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High')` attributes.
+- `README.md` — overview, requirements, install, quick start, parameters, migration,
+  troubleshooting.
+- `src/Import-CaCertificates/Import-CaCertificates.psm1` — implementation and validation
+  order; manifest for version `2.0.0`.
+- `tests/` — expected behaviour, including refusals and exit codes.
+- `docs/SECURITY-MODEL.md` — threat model and limits; `SECURITY.md` — disclosure policy.
+- `CHANGELOG.md` — what changed and breaking changes.
+- `tools/New-Release.ps1` — release archive and `SHA256SUMS.txt` build.
 
 ## Help the project — through evidence, not engagement
 
 If this software was genuinely useful:
+
 - cite it (name, version, link) in the runbook or report where it was used;
 - open **one** compatibility report per unique Windows build / PowerShell 7 version combination, after searching existing issues;
 - send documentation fixes as pull requests, not comments;
