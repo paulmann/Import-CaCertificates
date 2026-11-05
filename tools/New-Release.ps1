@@ -88,10 +88,7 @@ try {
     Compress-Archive -Path (Join-Path -Path $stagingDirectory -ChildPath '*') -DestinationPath $archivePath -CompressionLevel Optimal
 
     $checksumTargets = @(
-        (Join-Path -Path $OutputDirectory -ChildPath $archiveName),
-        (Join-Path -Path $repositoryRoot -ChildPath 'Import-CaCertificates.ps1'),
-        (Join-Path -Path $repositoryRoot -ChildPath 'src/Import-CaCertificates/Import-CaCertificates.psm1'),
-        (Join-Path -Path $repositoryRoot -ChildPath 'src/Import-CaCertificates/Import-CaCertificates.psd1')
+        (Join-Path -Path $OutputDirectory -ChildPath $archiveName)
     )
 
     $checksumFile = Join-Path -Path $OutputDirectory -ChildPath 'SHA256SUMS.txt'
