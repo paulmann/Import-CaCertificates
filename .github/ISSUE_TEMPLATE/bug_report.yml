@@ -1,0 +1,72 @@
+name: Bug report
+description: Report a reproducible defect in Import-CaCertificate
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. This project imports CA certificates into Windows
+        certificate stores, so remove private keys, PFX files, internal CA certificates,
+        internal fingerprints, host names and production logs before posting.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Actual behaviour, the exact error text and the exit code (0, 1 or 2).
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+      description: What the documentation or the exit-code table led you to expect.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction
+      description: Minimal commands to reproduce. Use public CA URLs and published fingerprints only.
+      render: shell
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Release tag, VERSION, or `(Get-Module Import-CaCertificates).Version`.
+      placeholder: 2.0.1
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Windows build, PowerShell version, and whether the session was elevated.
+      placeholder: Windows Server 2022 (20348), PowerShell 7.4, elevated
+    validations:
+      required: true
+  - type: dropdown
+    id: store
+    attributes:
+      label: Store location
+      options:
+        - LocalMachine
+        - CurrentUser
+        - Not applicable
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant output
+      description: The -Json envelope or the -LogFile lines, with personal data and internal names redacted.
+      render: text
+  - type: checkboxes
+    id: hygiene
+    attributes:
+      label: Data hygiene
+      options:
+        - label: The report contains no private key, PFX file, internal CA certificate, internal fingerprint or production log.
+          required: true

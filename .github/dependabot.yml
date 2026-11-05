@@ -1,0 +1,15 @@
+# The project ships no npm, pip or vendored runtime dependencies: the module is plain
+# PowerShell 7.4+, and Pester/PSScriptAnalyzer are installed by the workflows themselves.
+# The versions that need tracking are the Actions pinned in .github/workflows/.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: chore
+      include: scope

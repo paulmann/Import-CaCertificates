@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use Import-CaCertificates in a published report, a runbook or a thesis, cite it as below."
+title: "Import-CaCertificates"
+abstract: >-
+  Windows PowerShell 7.4+ module and command-line wrapper that imports public Root and
+  Intermediate CA certificates into Windows certificate stores only after each certificate
+  matches a pinned SHA-256 fingerprint. HTTPS-only downloads, PEM and DER input,
+  idempotent store handling, -WhatIf dry runs, JSON reports and documented exit codes.
+type: software
+authors:
+  - given-names: "Mikhail"
+    family-names: "Deynekin"
+    alias: "paulmann"
+    website: "https://github.com/paulmann"
+version: "2.0.1"
+date-released: "2026-11-06"
+license: MIT
+repository-code: "https://github.com/paulmann/Import-CaCertificates"
+url: "https://paulmann.github.io/Import-CaCertificates/"
+keywords:
+  - windows
+  - certificate
+  - certificate-authority
+  - pki
+  - powershell
+  - security
+  - trust-store

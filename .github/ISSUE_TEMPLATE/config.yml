@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security issue
+    url: https://github.com/paulmann/Import-CaCertificates/security/policy
+    about: Report vulnerabilities privately through the Security tab, never as a public issue.
+  - name: Documentation and examples
+    url: https://github.com/paulmann/Import-CaCertificates/wiki
+    about: Requirements, install, parameters and service scenarios.

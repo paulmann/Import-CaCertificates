@@ -1,0 +1,36 @@
+name: Feature request
+description: Propose a change or a new capability
+title: "[feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What problem does this solve? Describe the use case, not the implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Parameters, defaults or output that would change, and what stays the same.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Including "do nothing" and an existing tool that already covers the case.
+  - type: textarea
+    id: impact
+    attributes:
+      label: Compatibility and security impact
+      description: Breaking changes for 2.x, new dependencies, changes to what is written or verified, migration needs.
+  - type: checkboxes
+    id: invariants
+    attributes:
+      label: Invariants
+      options:
+        - label: The proposal keeps fingerprint pinning mandatory, downloads HTTPS-only, and still refuses private key material.
+          required: true

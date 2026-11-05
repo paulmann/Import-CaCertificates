@@ -1,0 +1,10 @@
+# Default owner: every change is reviewed by the maintainer.
+*                           @paulmann
+
+# Security-sensitive surfaces: validation, store writes, reporting, release and policy.
+/Import-CaCertificates.ps1  @paulmann
+/src/                       @paulmann
+/tools/                     @paulmann
+/.github/workflows/         @paulmann
+/SECURITY.md                @paulmann
+/.github/CODEOWNERS         @paulmann
